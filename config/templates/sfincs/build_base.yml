@@ -1,0 +1,79 @@
+# -------------------------------------------------------------------
+# Global settings
+# -------------------------------------------------------------------
+global:
+  data_libs:
+    - deltares_data   # default HydroMT datasets (optional)
+  crs: utm            # SFINCS requires projected CRS
+
+# -------------------------------------------------------------------
+# Workflow steps (executed in order)
+# -------------------------------------------------------------------
+steps:
+
+  # ---------------------------------------------------------------
+  # 1. General model configuration
+  # ---------------------------------------------------------------
+  - config.update:
+      tref: "20200101 000000"
+      tstart: "20200101 000000"
+      tstop: "20200103 000000"
+      dtmax: 30
+      dtout: 3600
+      outputformat: net
+
+  # ---------------------------------------------------------------
+  # 2. Create computational grid from region
+  # ---------------------------------------------------------------
+  - grid.create_from_region:
+      # region:
+        # geom: region        # refers to region passed from CLI
+      res: 50               # default resolution (can override per tile)
+      rotated: true
+
+  # ---------------------------------------------------------------
+  # 3. Create elevation (DEM merging etc.)
+  # ---------------------------------------------------------------
+  - elevation.create:
+      elevation_list:
+        - elevation: merit_hydro
+          zmin: 0.001
+
+
+  # ---------------------------------------------------------------
+  # 4. Create active mask (where model runs)
+  # ---------------------------------------------------------------
+  - mask.create_active:
+      zmin: -5              # deactivate deep cells
+
+  # ---------------------------------------------------------------
+  # 5. Create boundary mask (for future forcing)
+  # ---------------------------------------------------------------
+  - mask.create_boundary:
+      btype: outflow
+      zmin: -5
+
+  # ---------------------------------------------------------------
+  # 6. Add roughness (spatial manning)
+  # ---------------------------------------------------------------
+  - roughness.create:
+      roughness_list:
+      - lulc: esa_worldcover   # from data catalog
+
+  # ---------------------------------------------------------------
+  # 7. Add infiltration (simple default)
+  # ---------------------------------------------------------------
+  # - infiltration.create_cn:
+  #     cn: soilgrids              # curve number dataset
+
+  # ---------------------------------------------------------------
+  # 8. Build subgrid tables (important for urban)
+  # ---------------------------------------------------------------
+  - subgrid.create:
+      elevation_list:
+      - elevation: merit_hydro
+        zmin: 0.001
+      roughness_list:
+      - lulc: esa_worldcover
+      nr_subgrid_pixels: 4
+

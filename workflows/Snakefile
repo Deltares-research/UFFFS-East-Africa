@@ -1,0 +1,96 @@
+# workflows/Snakefile
+# Build base Wflow + SFINCS models for all cities defined in config/cities.yaml
+
+configfile: "config/cities.yaml"
+
+from pathlib import Path
+
+def cities():
+    return list(config.get("cities", {}).keys())
+
+def wflow_cities():
+    return [
+        c for c in cities()
+        if config["cities"][c].get("wflow", {}).get("enabled", True)
+    ]
+
+def sfincs_models(city):
+    return list(config["cities"][city].get("sfincs", {}).keys())
+
+
+def sfincs_region(wildcards):
+    return config["cities"][wildcards.city]["sfincs"][wildcards.sfmodel]["region"]
+
+
+def sfincs_build_base(wildcards):
+    return config["cities"][wildcards.city]["sfincs"][wildcards.sfmodel]["build_config"]
+
+
+def sfincs_build_overrides(wildcards):
+    cfg = config["cities"][wildcards.city]["sfincs"][wildcards.sfmodel]
+    files = [cfg["build_config"]]
+    if cfg.get("build_overrides"):
+        files.append(cfg["build_overrides"])
+    return files
+
+
+sfincs_pairs = [
+    (city, model)
+    for city in cities()
+    for model in config["cities"][city].get("sfincs", {})
+]
+
+
+# Sentinel files mark successful build completion (fast to check, rerunnable)
+WFLOW_SENTINEL  = "outputs/{city}/wflow/base/.built"
+SFINCS_SENTINEL = "outputs/{city}/sfincs/{sfmodel}/base/.built"
+
+
+sfincs_cities = []
+sfincs_models_list = []
+
+
+for city in cities():
+    for m in config["cities"][city].get("sfincs", {}):
+        sfincs_cities.append(city)
+        sfincs_models_list.append(m)
+
+
+rule all:
+    input:
+        expand(
+            "outputs/{city}/sfincs/{sfmodel}/base/sfincs.inp",
+            zip,
+            city=[c for c, m in sfincs_pairs],
+            sfmodel=[m for c, m in sfincs_pairs],
+        )
+
+
+# rule build_wflow_base:
+#     output:
+#         touch(WFLOW_SENTINEL)
+#     params:
+#         cfg="config/cities.yaml"
+#     shell:
+#         r"""
+#         set -euo pipefail
+#         python workflows/scripts/build_wflow.py --config {params.cfg} --city {wildcards.city}
+#         """
+
+
+rule build_sfincs_base:
+    input:
+        config="config/cities.yaml",
+        region=sfincs_region,
+        build_base="config/templates/sfincs/build_base.yml",
+        build_overrides=sfincs_build_overrides
+    output:
+        "outputs/{city}/sfincs/{sfmodel}/base/sfincs.inp"
+    log:
+        "logs/sfincs/{city}_{sfmodel}.log"
+    params:
+        cfg="config/cities.yaml"
+    script:
+        "scripts/build_sfincs.py"
+ 
+
