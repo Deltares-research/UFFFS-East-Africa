@@ -21,7 +21,7 @@ The workflow:
 ## 🗂️ Repository structure
 
 ```
-
+├── cities/                          # Input and config files for models
 ├── config/
 │   ├── cities.yaml                  # Main configuration
 │   └── templates/
@@ -43,17 +43,6 @@ The workflow:
 Defined in:
 config/cities.yaml
 
-Example:
-```
-cities:
-  Kampala:
-    sfincs:
-      kampala_sfincsmodel_01:
-        region: cities/Kampala/regions/domain.geojson
-        build_config: config/templates/sfincs/build_base.yml
-        build_overrides: config/overrides/kampala.yml
-        model_dir: outputs/Kampala/sfincs/kampala_sfincsmodel_01/base
-```
 ---
 
 ## Running
