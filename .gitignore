@@ -1,5 +1,8 @@
 *.svg
-outputs*
-.snakemake*
-logs*
-.vscode*
+outputs/
+.snakemake/
+logs/
+.vscode/
+.env/
+.venv/
+__pycache__/*

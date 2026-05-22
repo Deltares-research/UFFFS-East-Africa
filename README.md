@@ -1,27 +1,41 @@
-# UFFFS – Urban Flood Forecasting Framework Setup
+# 🌍 UFFFS – Urban Flood Forecasting Framework Setup
 
-This repository contains a reproducible workflow for building hydrological and hydrodynamic models (SFINCS, and optionally Wflow) using Snakemake and HydroMT.
-
----
-
-## Overview
-
-This framework:
-- Builds SFINCS models from YAML templates
-- Supports multiple cities and domains
-- Uses Snakemake for orchestration
-- Tracks dependencies for reproducibility
-- Provides per-model logging and DAG visualisation
+> Reproducible, scalable workflow for building hydrological and hydrodynamic models using **Snakemake + HydroMT**
 
 ---
 
-## Repository structure
+## 🚀 Overview
 
+This repository provides a **configuration-driven workflow** for generating SFINCS (and optionally Wflow) models.
+
+The workflow:
+
+- ⚙️ Builds models from YAML configurations
+- 🏙️ Supports multiple cities and domains
+- 🔁 Automatically reruns when inputs/config/scripts change
+- 📊 Provides DAG visualisation
+- 📝 Generates per-model logs
+
+---
+
+## 🗂️ Repository structure
+
+```text
 .
-├── config/              # Configuration files
-├── workflows/           # Snakemake workflow + scripts
-├── outputs/             # Generated models
-├── logs/                # Log files
+├── config/
+│   ├── cities.yaml                  # Main configuration
+│   └── templates/
+│       └── sfincs/
+│           └── build_base.yml       # Base HydroMT template
+│
+├── workflows/
+│   ├── Snakefile                   # Snakemake workflow
+│   └── scripts/
+│       └── build_sfincs.py         # Model build logic
+│
+├── outputs/                        # Generated models
+├── logs/                           # Log files
+
 
 ---
 
@@ -32,19 +46,23 @@ config/cities.yaml
 
 Example:
 
+
 cities:
   Kampala:
     sfincs:
-      model_01:
-        region: path/to/region.geojson
+      kampala_sfincsmodel_01:
+        region: cities/Kampala/regions/domain.geojson
         build_config: config/templates/sfincs/build_base.yml
+        build_overrides: config/overrides/kampala.yml
+        model_dir: outputs/Kampala/sfincs/kampala_sfincsmodel_01/base
+
 
 ---
 
 ## Running
 
 Run all:
-snakemake -c 1 -s workflows/Snakefile
+snakemake -c 4 -s workflows/Snakefile
 
 Dry run:
 snakemake -n -p -s workflows/Snakefile
@@ -70,8 +88,19 @@ conda install -c conda-forge snakemake graphviz hydromt hydromt_sfincs
 
 ---
 
-## Notes
+## Environment 
 
-- Snakemake ensures reproducibility by tracking inputs, configs, and scripts
-- Python scripts handle model generation
-- YAML files define configuration
+### Pixi
+
+Install environment:
+
+pixi install
+
+Run workflow:
+
+pixi run run
+
+### Conda
+
+conda env create -f environment.yml
+conda activate ufffs
