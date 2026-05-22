@@ -44,7 +44,7 @@ Defined in:
 config/cities.yaml
 
 Example:
-
+```
 cities:
   Kampala:
     sfincs:
@@ -53,6 +53,7 @@ cities:
         build_config: config/templates/sfincs/build_base.yml
         build_overrides: config/overrides/kampala.yml
         model_dir: outputs/Kampala/sfincs/kampala_sfincsmodel_01/base
+```
 ---
 
 ## Running
