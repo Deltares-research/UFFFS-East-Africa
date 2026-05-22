@@ -20,8 +20,8 @@ The workflow:
 
 ## 🗂️ Repository structure
 
-```text
-.
+```
+
 ├── config/
 │   ├── cities.yaml                  # Main configuration
 │   └── templates/
@@ -35,8 +35,7 @@ The workflow:
 │
 ├── outputs/                        # Generated models
 ├── logs/                           # Log files
-
-
+```
 ---
 
 ## Configuration
@@ -46,7 +45,6 @@ config/cities.yaml
 
 Example:
 
-
 cities:
   Kampala:
     sfincs:
@@ -55,24 +53,24 @@ cities:
         build_config: config/templates/sfincs/build_base.yml
         build_overrides: config/overrides/kampala.yml
         model_dir: outputs/Kampala/sfincs/kampala_sfincsmodel_01/base
-
-
 ---
 
 ## Running
 
 Run all:
+```
 snakemake -c 4 -s workflows/Snakefile
-
+```
 Dry run:
+```
 snakemake -n -p -s workflows/Snakefile
-
+```
 ---
 
 ## DAG
-
+```
 snakemake -s workflows/Snakefile --rulegraph | dot -Grankdir=LR -Tsvg > rulegraph.svg
-
+```
 ---
 
 ## Logging
@@ -82,25 +80,20 @@ logs/sfincs/{city}_{sfmodel}.log
 
 ---
 
-## Requirements
-
-conda install -c conda-forge snakemake graphviz hydromt hydromt_sfincs
-
----
-
 ## Environment 
 
 ### Pixi
 
 Install environment:
-
+```
 pixi install
-
+```
 Run workflow:
-
+```
 pixi run run
-
+```
 ### Conda
-
+```
 conda env create -f environment.yml
 conda activate ufffs
+```
