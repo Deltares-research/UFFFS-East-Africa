@@ -49,7 +49,7 @@ config/cities.yaml
 
 Run all:
 ```
-snakemake -c 4 -s workflows/Snakefile
+snakemake -c 1 -s workflows/Snakefile # number of cores
 ```
 Dry run:
 ```
