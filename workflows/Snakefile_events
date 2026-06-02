@@ -1,0 +1,180 @@
+# workflows/Snakefile_events
+# Event workflow:
+# 1) update base SFINCS models with event-specific forcing
+# 2) run SFINCS
+# 3) postprocess to downscaled floodmap
+
+configfile: "config/events.yml"
+
+from pathlib import Path
+import yaml
+import subprocess
+
+# -------------------------------------------------------------------
+# Load base-model registry from the existing base config
+# -------------------------------------------------------------------
+BASE_CFG_PATH = "config/cities.yaml"
+with open(BASE_CFG_PATH, "r", encoding="utf-8") as f:
+    BASE_CFG = yaml.safe_load(f)
+
+EVENT_CFG_PATH = "config/events.yml"
+
+# -------------------------------------------------------------------
+# Helpers
+# -------------------------------------------------------------------
+def cities():
+    return list(config.get("cities", {}).keys())
+
+def all_sfincs_models_for_city(city):
+    return list(BASE_CFG["cities"][city].get("sfincs", {}).keys())
+
+def event_model_list(city, event):
+    ev = config["cities"][city]["events"][event]
+    models = ev.get("models", "all")
+    if models == "all":
+        return all_sfincs_models_for_city(city)
+    return list(models)
+
+def event_triples():
+    triples = []
+    for city in cities():
+        for event in config["cities"][city].get("events", {}):
+            for sfmodel in event_model_list(city, event):
+                triples.append((city, event, sfmodel))
+    return triples
+
+TRIPLES = event_triples()
+
+def base_sfincs_cfg(city, sfmodel):
+    return BASE_CFG["cities"][city]["sfincs"][sfmodel]
+
+def base_model_root(wc):
+    sf_cfg = base_sfincs_cfg(wc.city, wc.sfmodel)
+    return sf_cfg.get("model_dir", f"outputs/{wc.city}/sfincs/{wc.sfmodel}/base")
+
+def base_model_inp(wc):
+    return str(Path(base_model_root(wc)) / "sfincs.inp")
+
+def event_model_root(wc):
+    return f"outputs/{wc.city}/events/{wc.event}/{wc.sfmodel}/model"
+
+def event_model_inp(wc):
+    return str(Path(event_model_root(wc)) / "sfincs.inp")
+
+def event_model_ran(wc):
+    return str(Path(event_model_root(wc)) / ".ran")
+
+def event_post_root(wc):
+    return f"outputs/{wc.city}/events/{wc.event}/{wc.sfmodel}/post"
+
+def event_floodmap(wc):
+    return str(Path(event_post_root(wc)) / "floodmap.tif")
+
+def event_cfg_file(_wc):
+    return EVENT_CFG_PATH
+
+def base_cfg_file(_wc):
+    return BASE_CFG_PATH
+
+def update_script(_wc):
+    return "workflows/scripts/update_sfincs_forcing.py"
+
+def post_script(_wc):
+    return "workflows/scripts/postprocess_sfincs.py"
+
+def update_log(wc):
+    return f"logs/events/update_{wc.city}_{wc.event}_{wc.sfmodel}.log"
+
+def run_log(wc):
+    return f"logs/events/run_{wc.city}_{wc.event}_{wc.sfmodel}.log"
+
+def post_log(wc):
+    return f"logs/events/post_{wc.city}_{wc.event}_{wc.sfmodel}.log"
+
+# -------------------------------------------------------------------
+# Get SFINCS executable (single global exe)
+# -------------------------------------------------------------------
+if "global" not in config or "sfincs_exe" not in config["global"]:
+    raise ValueError("Missing 'global.sfincs_exe' in config/events.yml")
+
+SFINCS_EXE = config["global"]["sfincs_exe"]
+
+
+
+# -------------------------------------------------------------------
+# Targets
+# -------------------------------------------------------------------
+rule all:
+    input:
+        expand(
+            "outputs/{city}/events/{event}/{sfmodel}/post/floodmap.tif",
+            zip,
+            city=[c for c, e, m in TRIPLES],
+            event=[e for c, e, m in TRIPLES],
+            sfmodel=[m for c, e, m in TRIPLES],
+        )
+
+# -------------------------------------------------------------------
+# 1) Update base model with event-specific forcing
+# -------------------------------------------------------------------
+rule update_sfincs_forcing:
+    input:
+        base_model=base_model_inp,
+        base_cfg=base_cfg_file,
+        events_cfg=event_cfg_file,
+        script=update_script
+    output:
+        "outputs/{city}/events/{event}/{sfmodel}/model/sfincs.inp"
+    script:
+        "scripts/update_sfincs_forcing.py"
+
+
+rule run_sfincs:
+    input:
+        "outputs/{city}/events/{event}/{sfmodel}/model/sfincs.inp"
+    output:
+        "outputs/{city}/events/{event}/{sfmodel}/model/sfincs_map.nc"
+    log:
+        "logs/events/run_{city}_{event}_{sfmodel}.log"
+    params:
+        model_root="outputs/{city}/events/{event}/{sfmodel}/model"
+    run:
+        log_path = Path(log[0])
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+
+        model_root = Path(params.model_root)
+        exe = SFINCS_EXE
+
+        with open(log_path, "w", encoding="utf-8") as lf:
+            lf.write(f"Running SFINCS executable: {exe}\n")
+            lf.write(f"Working directory: {model_root}\n")
+
+            subprocess.run(
+                [exe],
+                cwd=str(model_root),
+                check=True,
+                stdout=lf,
+                stderr=subprocess.STDOUT,
+            )
+
+        # ✅ sanity check (important!)
+        expected = model_root / "sfincs_map.nc"
+        if not expected.exists():
+            raise FileNotFoundError(
+                f"SFINCS finished but expected output not found: {expected}"
+            )
+
+
+
+rule postprocess_sfincs:
+    input:
+        map="outputs/{city}/events/{event}/{sfmodel}/model/sfincs_map.nc",
+        base_cfg=base_cfg_file,
+        events_cfg=event_cfg_file,
+        script=post_script
+    output:
+        "outputs/{city}/events/{event}/{sfmodel}/post/floodmap.tif"
+    log:
+        "logs/events/post_{city}_{event}_{sfmodel}.log"
+    script:
+        "scripts/postprocess_sfincs.py"
