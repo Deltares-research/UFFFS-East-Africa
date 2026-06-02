@@ -89,6 +89,8 @@ def main(snakemake):
     for step in cfg["steps"]:
         if "grid.create_from_region" in step:
             step["grid.create_from_region"]["region"] = {"geom": region_path}
+        if "mask.create_active" in step:
+            step["mask.create_active"] = {"include_polygon": region_path}
 
     logging.debug("Injected region into config")
 
@@ -96,6 +98,7 @@ def main(snakemake):
     # 5. Initialize model
     # -----------------------------
     data_libs = cfg.get("global", {}).get("data_libs", [])
+    # data_libs = ['c:/Git_repos/UFFFS/config/data_catalog.yml']
 
     logging.info(f"Using data libs: {data_libs}")
 
