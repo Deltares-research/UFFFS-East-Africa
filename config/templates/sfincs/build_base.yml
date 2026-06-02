@@ -36,7 +36,7 @@ steps:
   # ---------------------------------------------------------------
   - elevation.create:
       elevation_list:
-        - elevation: merit_hydro
+        - elevation: copdem30     # from data catalog
           zmin: 0.001
 
 
@@ -75,5 +75,5 @@ steps:
         zmin: 0.001
       roughness_list:
       - lulc: esa_worldcover
-      nr_subgrid_pixels: 4
+      nr_subgrid_pixels: 4  # number of subgrid pixels per grid cell (e.g. 4 = 4x4 = 16 subgrid pixels per grid cell)
 
