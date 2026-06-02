@@ -17,16 +17,14 @@ cities:
       #     mask: "data/kampala/landmask.geojson"
       #     hmin: 0.05
       synthetic_100mm_24h:
-        start: "2024-06-01 00:00:00"
-        end: "2024-06-02 00:00:00"
+        start: "20240601 000000"
+        end: "20240601 030000"
         models:
           - kampala_sfincsmodel_01
         forcing:
           type: synthetic_constant
           precipitation_mm_per_hr: 4.1666667
-          timestep_minutes: 60
         postprocess:
-          dem: "data/kampala/dem_2m.tif"
-          indices: "data/kampala/downscale_indices.tif"
-          mask: "data/kampala/landmask.geojson"
+          # indices: "data/kampala/downscale_indices.tif"
+          # mask: "data/kampala/landmask.geojson"
           hmin: 0.05

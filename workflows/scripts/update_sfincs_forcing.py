@@ -6,6 +6,77 @@ import yaml
 from hydromt_sfincs import SfincsModel
 from hydromt._utils import log as hydromt_log
 
+from pathlib import Path
+import os
+import shutil
+import logging
+
+# Files that belong to the static model schematisation and should be reused
+STATIC_MODEL_FILES = [
+    "sfincs.dep",
+    "sfincs.msk",
+    "sfincs.ind",
+    "sfincs.man",
+    "sfincs.qinf",
+    "sfincs.scs",
+    "sfincs.smax",
+    "sfincs.seff",
+    "sfincs.ks",
+    "sfincs.obs",
+    "sfincs.thd",
+    "sfincs.weir",
+    "sfincs.drn",
+    "gis",   # if HydroMT writes GIS sidecar data you want to reuse
+]
+
+# Files that are event-specific and should remain local in the event folder
+EVENT_LOCAL_FILES = {
+    "sfincs.inp",
+    "sfincs.prcp",
+    "sfincs_netampr.nc",
+    "sfincs_map.nc",
+    "sfincs_his.nc",
+    "hydromt_sfincs.log",
+}
+
+def _remove_path(path: Path):
+    if not path.exists() and not path.is_symlink():
+        return
+    if path.is_dir() and not path.is_symlink():
+        shutil.rmtree(path)
+    else:
+        path.unlink()
+
+def link_or_copy(src: Path, dst: Path):
+    """
+    Prefer hardlink, then symlink, then copy as fallback.
+    Hardlinks avoid duplication and work well on the same filesystem.
+    """
+    dst.parent.mkdir(parents=True, exist_ok=True)
+
+    if dst.exists() or dst.is_symlink():
+        _remove_path(dst)
+
+    if src.is_dir():
+        # safest for directories: symlink if possible, else copytree
+        try:
+            os.symlink(src, dst, target_is_directory=True)
+            return "symlink"
+        except Exception:
+            shutil.copytree(src, dst)
+            return "copydir"
+
+    # file case
+    try:
+        os.link(src, dst)
+        return "hardlink"
+    except Exception:
+        try:
+            os.symlink(src, dst)
+            return "symlink"
+        except Exception:
+            shutil.copy2(src, dst)
+            return "copy"
 
 def load_yaml(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -102,14 +173,20 @@ def main(snakemake):
         logging.info(f"Created precipitation forcing from catalog source: {forcing_cfg['precip']}")
 
     elif forcing_type == "synthetic_constant":
-        # Based on the documented create_uniform(timeseries=None, magnitude=None)
-        # interface for spatially uniform precipitation forcing.
-        if "timeseries" in forcing_cfg:
-            sf.precipitation.create_uniform(timeseries=forcing_cfg["timeseries"])
-            logging.info(f"Created uniform precipitation from timeseries: {forcing_cfg['timeseries']}")
-        else:
-            sf.precipitation.create_uniform(magnitude=forcing_cfg["magnitude"])
-            logging.info(f"Created uniform precipitation with magnitude = {forcing_cfg['magnitude']} mm/hr")
+        # Use spatially uniform precipitation forcing
+
+        if "precipitation_mm_per_hr" not in forcing_cfg:
+            raise ValueError(
+                "synthetic_constant forcing requires 'precipitation_mm_per_hr'"
+            )
+
+        magnitude = forcing_cfg["precipitation_mm_per_hr"]
+
+        sf.precipitation.create_uniform(magnitude=magnitude)
+
+        logging.info(
+            f"Created uniform precipitation forcing: {magnitude} mm/hr"
+        )
 
     else:
         raise ValueError(
@@ -119,6 +196,27 @@ def main(snakemake):
 
     sf.write()
     logging.info("Wrote updated event model")
+    # -----------------------------------------------------------------
+    # Replace duplicated static files in the event folder with links
+    # to the base model folder
+    # -----------------------------------------------------------------
+    base_root = Path(model_root_in)
+    event_root = Path(model_root_out)
+
+    for name in STATIC_MODEL_FILES:
+        src = base_root / name
+        dst = event_root / name
+
+        if not src.exists():
+            continue
+
+        if name in EVENT_LOCAL_FILES:
+            continue
+
+        mode = link_or_copy(src, dst)
+        logging.info(f"Reused static model asset '{name}' using mode: {mode}")
+
+    
     logging.info("=== Event update finished successfully ===")
 
 

@@ -14,6 +14,9 @@ def load_yaml(path):
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f) or {}
 
+def get_base_model_root(base_cfg, city, sfmodel):
+    sf_cfg = base_cfg["cities"][city]["sfincs"][sfmodel]
+    return Path(sf_cfg.get("model_dir", f"outputs/{city}/sfincs/{sfmodel}/base"))
 
 def setup_logging(log_file):
     handlers = [logging.StreamHandler(sys.stdout)]
@@ -28,9 +31,6 @@ def setup_logging(log_file):
         force=True,
     )
 
-    hydromt_log.initialize_logging()
-    if log_file:
-        hydromt_log._add_filehandler(log_file)
 
 
 def main(snakemake):
@@ -45,17 +45,27 @@ def main(snakemake):
     logging.info(f"City: {city}")
     logging.info(f"Event: {event}")
     logging.info(f"Model: {sfmodel}")
-
+    
+    base_cfg = load_yaml(snakemake.input.base_cfg)
     event_cfg = load_yaml(snakemake.input.events_cfg)
     ev = event_cfg["cities"][city]["events"][event]
     pp = ev["postprocess"]
 
+    
+    base_model_root = get_base_model_root(base_cfg, city, sfmodel)
     model_root = Path(snakemake.input.map).parent
     post_root = Path(snakemake.output[0]).parent
     post_root.mkdir(parents=True, exist_ok=True)
+    dem_path = base_model_root / "subgrid" / "dep_subgrid.tif"
+
+    if not dem_path.exists():
+        raise FileNotFoundError(
+            f"DEM not found in base model folder: {dem_path}"
+        )
+
 
     map_file = pp.get("map_file", "sfincs_map.nc")
-    zsmax_var = pp.get("zsmax_var", "zsmax")
+    zsmax_var = pp.get("zsmax_var", "zs")
     map_path = model_root / map_file
 
     logging.info(f"Model root: {model_root}")
@@ -92,10 +102,10 @@ def main(snakemake):
 
     downscale_floodmap(
         zsmax=zsmax,
-        dep=pp["dem"],
-        indices=pp.get("indices"),
+        dep=str(dem_path),
+        # indices=pp.get("indices"),
         hmin=pp.get("hmin", 0.05),
-        gdf_mask=gdf_mask,
+        # gdf_mask=gdf_mask,
         floodmap_fn=snakemake.output[0],
         **kwargs,
     )
@@ -110,22 +120,32 @@ if __name__ == "__main__":
     except NameError:
         class _WC:
             city = "Kampala"
-            event = "era5_may2024"
+            event = "synthetic_100mm_24h"
             sfmodel = "kampala_sfincsmodel_01"
 
         class FakeSnakemake:
             wildcards = _WC()
+
             input = type(
                 "obj",
                 (),
                 {
-                    "ran": "outputs/Kampala/events/era5_may2024/kampala_sfincsmodel_01/model/.ran",
-                    "events_cfg": "config/events.yaml",
+                    # ✅ updated: use sfincs_map.nc instead of .ran
+                    "map": "outputs/Kampala/events/synthetic_100mm_24h/kampala_sfincsmodel_01/model/sfincs_map.nc",
+                    "events_cfg": "config/events.yml",
+                    "base_cfg": "config/cities.yaml",
                 },
             )()
-            output = ["outputs/Kampala/events/era5_may2024/kampala_sfincsmodel_01/post/floodmap.tif"]
-            log = ["logs/events/debug_post_Kampala_era5_may2024_kampala_sfincsmodel_01.log"]
+
+            output = [
+                "outputs/Kampala/events/synthetic_100mm_24h/kampala_sfincsmodel_01/post/floodmap.tif"
+            ]
+
+            log = [
+                "logs/events/debug_post_Kampala_synthetic_100mm_24h_kampala_sfincsmodel_01.log"
+            ]
 
         smk = FakeSnakemake()
 
     main(smk)
+
