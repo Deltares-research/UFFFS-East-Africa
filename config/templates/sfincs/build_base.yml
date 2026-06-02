@@ -28,7 +28,7 @@ steps:
   - grid.create_from_region:
       # region:
         # geom: region        # refers to region passed from CLI
-      res: 50               # default resolution (can override per tile)
+      res: 30               # default resolution (can override per tile)
       rotated: true
 
   # ---------------------------------------------------------------
@@ -44,7 +44,7 @@ steps:
   # 4. Create active mask (where model runs)
   # ---------------------------------------------------------------
   - mask.create_active:
-      zmin: -5              # deactivate deep cells
+      include_polygon           # deactivate deep cells
 
   # ---------------------------------------------------------------
   # 5. Create boundary mask (for future forcing)
@@ -71,7 +71,7 @@ steps:
   # ---------------------------------------------------------------
   - subgrid.create:
       elevation_list:
-      - elevation: merit_hydro
+      - elevation: copdem30
         zmin: 0.001
       roughness_list:
       - lulc: esa_worldcover
