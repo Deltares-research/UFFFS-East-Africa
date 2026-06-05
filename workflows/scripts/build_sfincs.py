@@ -70,14 +70,36 @@ def main(snakemake):
     # -----------------------------
     # 3. Merge base + overrides
     # -----------------------------
+
     def merge(a, b):
         out = copy.deepcopy(a)
+
         for k, v in (b or {}).items():
-            if k in out and isinstance(out[k], dict) and isinstance(v, dict):
+
+            # SPECIAL CASE: steps (list of dicts)
+            if k == "steps" and isinstance(v, list):
+                base_steps = out.get("steps", [])
+
+                def get_key(step):
+                    return list(step.keys())[0]
+
+                base_dict = {get_key(s): s for s in base_steps}
+
+                for step in v:
+                    key = get_key(step)
+                    base_dict[key] = step   # override or add
+
+                out["steps"] = list(base_dict.values())
+
+            # Default recursive merge
+            elif k in out and isinstance(out[k], dict) and isinstance(v, dict):
                 out[k] = merge(out[k], v)
+
             else:
                 out[k] = copy.deepcopy(v)
+
         return out
+
 
     cfg = merge(base, overrides)
 
@@ -133,7 +155,7 @@ if __name__ == "__main__":
 
         class FakeSnakemake:
             wildcards = type(
-                "obj", (), {"city": "Kampala", "sfmodel": "kampala_sfincsmodel_01"}
+                "obj", (), {"city": "Kampala", "sfmodel": "kampala_sfincsmodel_01_lidar"}
             )()
 
             config = yaml.safe_load(open("config/cities.yaml"))

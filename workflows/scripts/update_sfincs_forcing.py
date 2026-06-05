@@ -26,7 +26,11 @@ STATIC_MODEL_FILES = [
     "sfincs.thd",
     "sfincs.weir",
     "sfincs.drn",
-    "gis",   # if HydroMT writes GIS sidecar data you want to reuse
+    "sfincs_subgrid.nc",
+    "gis/dep.tif",   # if HydroMT writes GIS sidecar data you want to dep.tif
+    "gis/manning.tif",   # if HydroMT writes GIS sidecar data you want to dep.tif
+    "gis/mask.tif",   # if HydroMT writes GIS sidecar data you want to dep.tif
+    "gis/region.geojson",   # if HydroMT writes GIS sidecar data you want to dep.tif
 ]
 
 # Files that are event-specific and should remain local in the event folder
@@ -157,6 +161,7 @@ def main(snakemake):
     logging.info("Updated tref/tstart/tstop")
 
     forcing_type = forcing_cfg["type"]
+    
 
     if forcing_type == "catalog":
         # Based on the documented update flow using sf.precipitation.create(...)
@@ -214,7 +219,7 @@ def main(snakemake):
             continue
 
         mode = link_or_copy(src, dst)
-        logging.info(f"Reused static model asset '{name}' using mode: {mode}")
+        logging.debug(f"Reused static model asset '{name}' using mode: {mode}")
 
     
     logging.info("=== Event update finished successfully ===")

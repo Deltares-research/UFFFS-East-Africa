@@ -25,6 +25,11 @@ cities:
   #       build_config: config/templates/sfincs/build_base.yml
   #       build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_04.yml
   #       model_dir: outputs/Kampala/sfincs/kampala_sfincsmodel_04/base
+      kampala_sfincsmodel_01_lidar:
+        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_01.geojson
+        build_config: config/templates/sfincs/build_base.yml
+        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_01_lidar.yml
+        model_dir: outputs/Kampala/sfincs/kampala_sfincsmodel_01_lidar/base
   # Kigali:
   #   wflow:
   #     enabled: false

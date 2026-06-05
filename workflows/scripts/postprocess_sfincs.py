@@ -7,6 +7,8 @@ import xarray as xr
 import geopandas as gpd
 
 from hydromt_sfincs.utils import downscale_floodmap
+from hydromt_sfincs import SfincsModel
+
 from hydromt._utils import log as hydromt_log
 
 
@@ -63,35 +65,14 @@ def main(snakemake):
             f"DEM not found in base model folder: {dem_path}"
         )
 
-
-    map_file = pp.get("map_file", "sfincs_map.nc")
-    zsmax_var = pp.get("zsmax_var", "zs")
-    map_path = model_root / map_file
+    mod = SfincsModel(model_root, mode='r')
+    mod.output.read()
+    da_zsmax = mod.output.data["zsmax"].max(dim="timemax")
 
     logging.info(f"Model root: {model_root}")
-    logging.info(f"Map file: {map_path}")
     logging.info(f"Floodmap output: {snakemake.output[0]}")
 
-    if not map_path.exists():
-        raise FileNotFoundError(
-            f"Expected model output file not found: {map_path}. "
-            f"Adjust postprocess.map_file in config/events.yaml if needed."
-        )
-
-    ds = xr.open_dataset(map_path)
-    if zsmax_var not in ds:
-        raise KeyError(
-            f"Variable '{zsmax_var}' not found in {map_path}. "
-            f"Adjust postprocess.zsmax_var in config/events.yaml."
-        )
-
-    zsmax = ds[zsmax_var]
-
-    gdf_mask = None
-    if "mask" in pp and pp["mask"]:
-        gdf_mask = gpd.read_file(pp["mask"])
-        logging.info(f"Loaded mask polygons from: {pp['mask']}")
-
+  
     kwargs = {}
     if "reproj_method" in pp:
         kwargs["reproj_method"] = pp["reproj_method"]
@@ -101,7 +82,7 @@ def main(snakemake):
         kwargs["nrmax"] = pp["nrmax"]
 
     downscale_floodmap(
-        zsmax=zsmax,
+        zsmax=da_zsmax,
         dep=str(dem_path),
         # indices=pp.get("indices"),
         hmin=pp.get("hmin", 0.05),
@@ -130,7 +111,6 @@ if __name__ == "__main__":
                 "obj",
                 (),
                 {
-                    # ✅ updated: use sfincs_map.nc instead of .ran
                     "map": "outputs/Kampala/events/synthetic_100mm_24h/kampala_sfincsmodel_01/model/sfincs_map.nc",
                     "events_cfg": "config/events.yml",
                     "base_cfg": "config/cities.yaml",

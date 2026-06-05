@@ -107,7 +107,7 @@ SFINCS_EXE = config["global"]["sfincs_exe"]
 rule all:
     input:
         expand(
-            "outputs/{city}/events/{event}/{sfmodel}/post/floodmap.tif",
+            "outputs/{city}/events/{event}/{sfmodel}/floodmap.tif",
             zip,
             city=[c for c, e, m in TRIPLES],
             event=[e for c, e, m in TRIPLES],
@@ -124,20 +124,20 @@ rule update_sfincs_forcing:
         events_cfg=event_cfg_file,
         script=update_script
     output:
-        "outputs/{city}/events/{event}/{sfmodel}/model/sfincs.inp"
+        "outputs/{city}/events/{event}/{sfmodel}/sfincs.inp"
     script:
         "scripts/update_sfincs_forcing.py"
 
 
 rule run_sfincs:
     input:
-        "outputs/{city}/events/{event}/{sfmodel}/model/sfincs.inp"
+        "outputs/{city}/events/{event}/{sfmodel}/sfincs.inp"
     output:
-        "outputs/{city}/events/{event}/{sfmodel}/model/sfincs_map.nc"
+        "outputs/{city}/events/{event}/{sfmodel}/sfincs_map.nc"
     log:
         "logs/events/run_{city}_{event}_{sfmodel}.log"
     params:
-        model_root="outputs/{city}/events/{event}/{sfmodel}/model"
+        model_root="outputs/{city}/events/{event}/{sfmodel}"
     run:
         log_path = Path(log[0])
         log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -168,12 +168,12 @@ rule run_sfincs:
 
 rule postprocess_sfincs:
     input:
-        map="outputs/{city}/events/{event}/{sfmodel}/model/sfincs_map.nc",
+        map="outputs/{city}/events/{event}/{sfmodel}/sfincs_map.nc",
         base_cfg=base_cfg_file,
         events_cfg=event_cfg_file,
         script=post_script
     output:
-        "outputs/{city}/events/{event}/{sfmodel}/post/floodmap.tif"
+        "outputs/{city}/events/{event}/{sfmodel}/floodmap.tif"
     log:
         "logs/events/post_{city}_{event}_{sfmodel}.log"
     script:

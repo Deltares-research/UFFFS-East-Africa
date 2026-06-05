@@ -1,21 +1,20 @@
 global:
+  data_libs: 'deltares_data'
   sfincs_exe: "c:/Program Files/Deltares/SFINCS_v2.3.0_mt_Faber_release_exe/sfincs.exe"
 
 cities:
   Kampala:
     events:
-      # era5_may2024:
-      #   start: "2024-05-01 00:00:00"
-      #   end: "2024-05-03 00:00:00"
-      #   models: all
-      #   forcing:
-      #     type: catalog
-      #     precip: "era5_hourly"
-      #   postprocess:
-      #     dem: "data/kampala/dem_2m.tif"
-      #     indices: "data/kampala/downscale_indices.tif"
-      #     mask: "data/kampala/landmask.geojson"
-      #     hmin: 0.05
+      era5_may2024:
+        start: "20200501 000000"
+        end: "20200503 000000"
+        models: 
+          - kampala_sfincsmodel_01
+        forcing:
+          type: catalog
+          precip: "era5_hourly"
+        postprocess:
+          hmin: 0.05
       synthetic_100mm_24h:
         start: "20240601 000000"
         end: "20240601 030000"
@@ -25,6 +24,14 @@ cities:
           type: synthetic_constant
           precipitation_mm_per_hr: 4.1666667
         postprocess:
-          # indices: "data/kampala/downscale_indices.tif"
-          # mask: "data/kampala/landmask.geojson"
+          hmin: 0.05
+      synthetic_100mm_24h:
+        start: "20240601 000000"
+        end: "20240601 030000"
+        models:
+          - kampala_sfincsmodel_01_lidar
+        forcing:
+          type: synthetic_constant
+          precipitation_mm_per_hr: 4.1666667
+        postprocess:
           hmin: 0.05
