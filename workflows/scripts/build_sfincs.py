@@ -43,7 +43,7 @@ def main(snakemake):
     build_base_path = sf_cfg["build_config"]
     build_overrides_path = sf_cfg.get("build_overrides")
 
-    model_root = Path(sf_cfg.get("model_dir", f"outputs/{city}/sfincs/{sfmodel}/base"))
+    model_root = Path(snakemake.output['model_root']).parent
     model_root.mkdir(parents=True, exist_ok=True)
 
     logging.info(f"City: {city}")
@@ -158,7 +158,7 @@ if __name__ == "__main__":
                 "obj", (), {"city": "Kampala", "sfmodel": "kampala_sfincsmodel_01_lidar"}
             )()
 
-            config = yaml.safe_load(open("config/cities.yaml"))
+            config = yaml.safe_load(open("config/cities.yml"))
             log = ["debug_sfincs.log"]  # ✅ write log also in debug mode
 
         smk = FakeSnakemake()

@@ -1,89 +1,234 @@
-# 🌍 UFFFS – Urban Flood Forecasting Framework Setup
+# 🌍 UFFFS – Urban Flood Forecasting Framework
 
-> Reproducible, scalable workflow for building hydrological and hydrodynamic models using **Snakemake + HydroMT**
+> Reproducible, scalable workflow for building and running urban flood models using **Snakemake + HydroMT + SFINCS**
 
 ---
 
 ## 🚀 Overview
 
-This repository provides a **configuration-driven workflow** for generating SFINCS (and optionally Wflow) models.
+UFFFS provides a **fully configuration-driven workflow** for:
 
-The workflow:
+- 🧱 Building base SFINCS model schematisations
+- 🌧️ Running flood events with different forcing scenarios
+- 🗺️ Postprocessing and merging floodmaps
+- 🧩 Comparing model configurations (e.g. baseline vs lidar)
 
-- ⚙️ Builds models from YAML configurations
-- 🏙️ Supports multiple cities and domains
-- 🔁 Automatically reruns when inputs/config/scripts change
-- 📊 Provides DAG visualisation
-- 📝 Generates per-model logs
+The framework is designed for:
+
+- reproducibility ✅  
+- scalability across cities ✅  
+- efficient reuse of models ✅  
+
+---
+
+## 🧭 Workflows
+
+UFFFS consists of two main workflows:
+
+---
+
+### 🧱 Build workflow
+
+Builds reusable **base SFINCS models** using HydroMT.
+
+- Reads configuration from `config/cities.yml`
+- Generates model schematisations
+- Writes outputs to:
+
+```
+outputs/{city}/{sfmodel}/sfincs_base/
+```
+
+📖 See:
+👉 `docs/build_workflow.md`
+
+---
+
+### 🌧️ Event workflow
+
+Runs **event simulations** on top of base models.
+
+- Updates forcing (ERA5 / synthetic)
+- Runs SFINCS
+- Postprocesses floodmaps
+- Merges results **per model group**
+
+Outputs:
+
+```
+outputs/{city}/events/{event}/
+  {city}_{event}_{group}_floodmap.tif
+```
+
+📖 See:
+👉 `docs/events_workflow.md`
 
 ---
 
 ## 🗂️ Repository structure
 
 ```
-├── cities/                          # Input and config files for models
 ├── config/
-│   ├── cities.yaml                  # Main configuration
+│   ├── cities.yml                 # Model definitions (incl. groups)
+│   ├── events.yml                 # Event configuration
 │   └── templates/
 │       └── sfincs/
-│           └── build_base.yml       # Base HydroMT template
+│           └── build_base.yml
 │
 ├── workflows/
-│   ├── Snakefile                   # Snakemake workflow
+│   ├── Snakefile                  # Build workflow
+│   ├── Snakefile_events           # Event workflow
 │   └── scripts/
-│       └── build_sfincs.py         # Model build logic
+│       ├── build_sfincs.py
+│       ├── update_sfincs_forcing.py
+│       ├── postprocess_sfincs.py
+│       └── merge_floodmaps.py
 │
-├── outputs/                        # Generated models
-├── logs/                           # Log files
+├── docs/
+│   ├── build_workflow.md
+│   └── events_workflow.md
+│
+├── outputs/                       # Generated models and results
+├── logs/                          # Log files
 ```
+
 ---
 
-## Configuration
+## ⚙️ Configuration
+
+### Base models
 
 Defined in:
-config/cities.yaml
+
+```
+config/cities.yml
+```
+
+Includes:
+- model definitions
+- grouping (e.g. baseline / lidar)
+- build templates
 
 ---
 
-## Running
+### Events
 
-Run all:
+Defined in:
+
+```
+config/events.yml
+```
+
+Includes:
+- event timing
+- forcing type
+- model or group selection
+
+---
+
+## ▶️ Running
+
+### Build base models
+
 ```
 snakemake -c 4 -s workflows/Snakefile
 ```
-Dry run:
-```
-snakemake -n -p -s workflows/Snakefile
-```
----
-
-## DAG
-```
-snakemake -s workflows/Snakefile --rulegraph | dot -Grankdir=LR -Tsvg > rulegraph.svg
-```
----
-
-## Logging
-
-Logs are written per model:
-logs/sfincs/{city}_{sfmodel}.log
 
 ---
 
-## Environment 
+### Run events
+
+```
+snakemake -c 4 -s workflows/Snakefile_events
+```
+
+---
+
+### Dry run
+
+```
+snakemake -n -p -s workflows/Snakefile_events
+```
+
+---
+
+## 📊 DAG visualisation
+
+Build workflow:
+
+```
+snakemake -s workflows/Snakefile --rulegraph | dot -Grankdir=LR -Tsvg > rulegraph_build.svg
+```
+
+Event workflow:
+
+```
+snakemake -s workflows/Snakefile_events --rulegraph | dot -Grankdir=LR -Tsvg > rulegraph_events.svg
+```
+
+---
+
+## 📝 Logging
+
+Logs are written per step:
+
+```
+logs/sfincs/       # build workflow
+logs/events/       # event workflow
+```
+
+---
+
+## 🧱 Architecture principle
+
+The framework separates:
+
+| Component | Role |
+|----------|------|
+| `sfincs_base` | immutable base models |
+| `events`      | event-specific runs |
+| scripts       | execution logic |
+| Snakefiles    | workflow orchestration |
+
+This ensures:
+
+- ✅ no duplication of large model data (hardlinks used)
+- ✅ efficient scaling
+- ✅ reproducibility
+
+---
+
+## 🧪 Environment
 
 ### Pixi
 
-Install environment:
+Install:
 ```
 pixi install
 ```
-Run workflow:
+
+Run:
 ```
 pixi run run
 ```
+
+---
+
 ### Conda
+
 ```
 conda env create -f environment.yml
 conda activate ufffs
 ```
+
+---
+
+## 🚀 Future extensions
+
+- 🌍 Multi-city scaling
+- 📊 Ensemble simulations
+- 🔄 Automated rebuild triggers
+- ☁️ Cloud execution (AWS / batch)
+- 📉 Model comparison (e.g. lidar vs baseline)
+
+---

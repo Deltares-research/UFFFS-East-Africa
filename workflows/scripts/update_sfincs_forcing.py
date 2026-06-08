@@ -107,7 +107,7 @@ def setup_logging(log_file):
 
 def get_base_model_root(base_cfg, city, sfmodel):
     sf_cfg = base_cfg["cities"][city]["sfincs"][sfmodel]
-    return Path(sf_cfg.get("model_dir", f"outputs/{city}/sfincs/{sfmodel}/base"))
+    return Path(sf_cfg.get("model_dir", f"outputs/{city}/sfincs_base/{sfmodel}"))
 
 
 def main(snakemake):
@@ -240,8 +240,8 @@ if __name__ == "__main__":
                 "obj",
                 (),
                 {
-                    "base_cfg": "config/cities.yaml",
-                    "events_cfg": "config/events.yaml",
+                    "base_cfg": "config/cities.yml",
+                    "events_cfg": "config/events.yml",
                 },
             )()
             output = ["outputs/Kampala/events/synthetic_100mm_24h/kampala_sfincsmodel_01/model/sfincs.inp"]
