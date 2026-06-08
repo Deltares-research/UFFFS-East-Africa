@@ -24,13 +24,14 @@ cities:
           precipitation_mm_per_hr: 10
         postprocess:
           hmin: 0.05
-      # synthetic_100mm_24h:
-      #   start: "20240601 000000"
-      #   end: "20240601 030000"
-      #   models:
-      #     - kampala_sfincsmodel_01_lidar
-      #   forcing:
-      #     type: synthetic_constant
-      #     precipitation_mm_per_hr: 4.1666667
-      #   postprocess:
-      #     hmin: 0.05
+  Kigali:
+    events:
+      synthetic_60mm_6h:
+        start: "20240601 000000"
+        end: "20240601 060000"
+        models: all
+        forcing:
+          type: synthetic_constant
+          precipitation_mm_per_hr: 10
+        postprocess:
+          hmin: 0.05

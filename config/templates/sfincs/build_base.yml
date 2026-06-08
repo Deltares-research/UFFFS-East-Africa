@@ -30,7 +30,7 @@ steps:
       # region:
         # geom: region        # refers to region passed from CLI
       res: 30               # default resolution (can override per tile)
-      rotated: true
+      rotated: false
 
   # ---------------------------------------------------------------
   # 3. Create elevation (DEM merging etc.)

@@ -59,6 +59,7 @@ def main(snakemake):
         mosaic, transform = merge(srcs, method="max")
 
         out_meta = srcs[0].meta.copy()
+        out_meta.pop("profile", None)
         out_meta.update(
             {
                 "height": mosaic.shape[1],
