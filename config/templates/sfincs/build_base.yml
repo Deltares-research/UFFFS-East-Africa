@@ -4,6 +4,7 @@
 global:
   data_libs:
     - deltares_data   # default HydroMT datasets (optional)
+    - c:/Git_repos/UFFFS/config/data_catalog.yml
   crs: utm            # SFINCS requires projected CRS
 
 # -------------------------------------------------------------------
@@ -28,8 +29,8 @@ steps:
   - grid.create_from_region:
       # region:
         # geom: region        # refers to region passed from CLI
-      res: 50               # default resolution (can override per tile)
-      rotated: true
+      res: 30               # default resolution (can override per tile)
+      rotated: false
 
   # ---------------------------------------------------------------
   # 3. Create elevation (DEM merging etc.)
@@ -44,7 +45,7 @@ steps:
   # 4. Create active mask (where model runs)
   # ---------------------------------------------------------------
   - mask.create_active:
-      zmin: -5              # deactivate deep cells
+      include_polygon           # deactivate deep cells
 
   # ---------------------------------------------------------------
   # 5. Create boundary mask (for future forcing)
@@ -71,9 +72,11 @@ steps:
   # ---------------------------------------------------------------
   - subgrid.create:
       elevation_list:
-      - elevation: merit_hydro
+      - elevation: copdem30
         zmin: 0.001
       roughness_list:
       - lulc: esa_worldcover
       nr_subgrid_pixels: 4  # number of subgrid pixels per grid cell (e.g. 4 = 4x4 = 16 subgrid pixels per grid cell)
+      write_dep_tif : true  # write depth-dependent subgrid tables as GeoTIFFs (for debugging/visualization)
+      write_man_tif : true  # write roughness-based subgrid tables as GeoTIFFs (for debugging/visualization)
 

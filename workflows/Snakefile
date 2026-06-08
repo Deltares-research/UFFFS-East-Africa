@@ -1,7 +1,7 @@
 # workflows/Snakefile
-# Build base Wflow + SFINCS models for all cities defined in config/cities.yaml
+# Build base Wflow + SFINCS models for all cities defined in config/cities.yml
 
-configfile: "config/cities.yaml"
+configfile: "config/cities.yml"
 
 from pathlib import Path
 
@@ -33,18 +33,15 @@ def sfincs_build_overrides(wildcards):
         files.append(cfg["build_overrides"])
     return files
 
+def model_group(city, sfmodel):
+    return BASE_CFG["cities"][city]["sfincs"][sfmodel].get("group", "default")
+
 
 sfincs_pairs = [
     (city, model)
     for city in cities()
     for model in config["cities"][city].get("sfincs", {})
 ]
-
-
-# Sentinel files mark successful build completion (fast to check, rerunnable)
-WFLOW_SENTINEL  = "outputs/{city}/wflow/base/.built"
-SFINCS_SENTINEL = "outputs/{city}/sfincs/{sfmodel}/base/.built"
-
 
 sfincs_cities = []
 sfincs_models_list = []
@@ -59,7 +56,7 @@ for city in cities():
 rule all:
     input:
         expand(
-            "outputs/{city}/sfincs/{sfmodel}/base/sfincs.inp",
+            "outputs/{city}/sfincs_base/{sfmodel}/sfincs.inp",
             zip,
             city=[c for c, m in sfincs_pairs],
             sfmodel=[m for c, m in sfincs_pairs],
@@ -70,7 +67,7 @@ rule all:
 #     output:
 #         touch(WFLOW_SENTINEL)
 #     params:
-#         cfg="config/cities.yaml"
+#         cfg="config/cities.yml"
 #     shell:
 #         r"""
 #         set -euo pipefail
@@ -80,16 +77,16 @@ rule all:
 
 rule build_sfincs_model:
     input:
-        config="config/cities.yaml",
+        config="config/cities.yml",
         region=sfincs_region,
         build_base="config/templates/sfincs/build_base.yml",
         build_overrides=sfincs_build_overrides
     output:
-        "outputs/{city}/sfincs/{sfmodel}/base/sfincs.inp"
+        model_root = "outputs/{city}/sfincs_base/{sfmodel}/sfincs.inp"
     log:
         "logs/sfincs/{city}_{sfmodel}.log"
     params:
-        cfg="config/cities.yaml"
+        cfg="config/cities.yml"
     script:
         "scripts/build_sfincs.py"
  

@@ -43,7 +43,7 @@ def main(snakemake):
     build_base_path = sf_cfg["build_config"]
     build_overrides_path = sf_cfg.get("build_overrides")
 
-    model_root = Path(sf_cfg.get("model_dir", f"outputs/{city}/sfincs/{sfmodel}/base"))
+    model_root = Path(snakemake.output['model_root']).parent
     model_root.mkdir(parents=True, exist_ok=True)
 
     logging.info(f"City: {city}")
@@ -70,14 +70,36 @@ def main(snakemake):
     # -----------------------------
     # 3. Merge base + overrides
     # -----------------------------
+
     def merge(a, b):
         out = copy.deepcopy(a)
+
         for k, v in (b or {}).items():
-            if k in out and isinstance(out[k], dict) and isinstance(v, dict):
+
+            # SPECIAL CASE: steps (list of dicts)
+            if k == "steps" and isinstance(v, list):
+                base_steps = out.get("steps", [])
+
+                def get_key(step):
+                    return list(step.keys())[0]
+
+                base_dict = {get_key(s): s for s in base_steps}
+
+                for step in v:
+                    key = get_key(step)
+                    base_dict[key] = step   # override or add
+
+                out["steps"] = list(base_dict.values())
+
+            # Default recursive merge
+            elif k in out and isinstance(out[k], dict) and isinstance(v, dict):
                 out[k] = merge(out[k], v)
+
             else:
                 out[k] = copy.deepcopy(v)
+
         return out
+
 
     cfg = merge(base, overrides)
 
@@ -89,6 +111,8 @@ def main(snakemake):
     for step in cfg["steps"]:
         if "grid.create_from_region" in step:
             step["grid.create_from_region"]["region"] = {"geom": region_path}
+        if "mask.create_active" in step:
+            step["mask.create_active"] = {"include_polygon": region_path}
 
     logging.debug("Injected region into config")
 
@@ -96,6 +120,7 @@ def main(snakemake):
     # 5. Initialize model
     # -----------------------------
     data_libs = cfg.get("global", {}).get("data_libs", [])
+    # data_libs = ['c:/Git_repos/UFFFS/config/data_catalog.yml']
 
     logging.info(f"Using data libs: {data_libs}")
 
@@ -130,10 +155,10 @@ if __name__ == "__main__":
 
         class FakeSnakemake:
             wildcards = type(
-                "obj", (), {"city": "Kampala", "sfmodel": "kampala_sfincsmodel_01"}
+                "obj", (), {"city": "Kampala", "sfmodel": "kampala_sfincsmodel_01_lidar"}
             )()
 
-            config = yaml.safe_load(open("config/cities.yaml"))
+            config = yaml.safe_load(open("config/cities.yml"))
             log = ["debug_sfincs.log"]  # ✅ write log also in debug mode
 
         smk = FakeSnakemake()
