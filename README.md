@@ -131,7 +131,7 @@ Includes:
 ### Build base models
 
 ```
-snakemake -c 4 -s workflows/Snakefile
+snakemake -c 1 -s workflows/Snakefile
 ```
 
 ---
@@ -139,7 +139,7 @@ snakemake -c 4 -s workflows/Snakefile
 ### Run events
 
 ```
-snakemake -c 4 -s workflows/Snakefile_events
+snakemake -c 1 -s workflows/Snakefile_events
 ```
 
 ---
@@ -147,7 +147,7 @@ snakemake -c 4 -s workflows/Snakefile_events
 ### Dry run
 
 ```
-snakemake -n -p -s workflows/Snakefile_events
+snakemake -n -s workflows/Snakefile_events
 ```
 
 ---
@@ -223,12 +223,8 @@ conda activate ufffs
 
 ---
 
-## 🚀 Future extensions
+##  Notes
 
-- 🌍 Multi-city scaling
-- 📊 Ensemble simulations
-- 🔄 Automated rebuild triggers
-- ☁️ Cloud execution (AWS / batch)
-- 📉 Model comparison (e.g. lidar vs baseline)
+- HydroMT might not be able to run in parallel, so better to use 1 core: '-c 1'
 
 ---
