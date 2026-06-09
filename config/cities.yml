@@ -26,6 +26,21 @@ cities:
         build_config: config/templates/sfincs/build_base.yml
         build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_01_lidar.yml
         group: "lidar"
+      kampala_sfincsmodel_02_lidar:
+        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_02.geojson
+        build_config: config/templates/sfincs/build_base.yml
+        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_02_lidar.yml
+        group: "lidar"
+      kampala_sfincsmodel_03_lidar:
+        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_03.geojson
+        build_config: config/templates/sfincs/build_base.yml
+        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_03_lidar.yml
+        group: "lidar"
+      kampala_sfincsmodel_04_lidar:
+        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_04.geojson
+        build_config: config/templates/sfincs/build_base.yml
+        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_04_lidar.yml
+        group: "lidar"
   Kigali:
     wflow:
       enabled: false

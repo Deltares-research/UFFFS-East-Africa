@@ -77,7 +77,6 @@ rule all:
 
 rule build_sfincs_model:
     input:
-        config="config/cities.yml",
         region=sfincs_region,
         build_base="config/templates/sfincs/build_base.yml",
         build_overrides=sfincs_build_overrides

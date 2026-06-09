@@ -4,6 +4,8 @@ import sys
 import shutil
 import rasterio
 from rasterio.merge import merge
+from rasterio.io import MemoryFile
+import numpy as np
 
 
 def setup_logging(log_file):
@@ -47,13 +49,48 @@ def main(snakemake):
     # ✅ Case 1: only one model → copy
     if len(floodmaps) == 1:
         shutil.copy2(floodmaps[0], out_path)
-        logging.info("Only one floodmap → copied directly")
+        logging.info("Only one floodmap: copied directly")
         return
 
     # ✅ Case 2: multiple models → merge
     logging.info("Merging floodmaps using max()")
 
-    srcs = [rasterio.open(fp) for fp in floodmaps]
+
+    srcs = []
+    memfiles = []
+
+    for fp in floodmaps:
+        src = rasterio.open(fp)
+
+        transform = src.transform
+
+        # detect upside-down raster
+        if transform.e > 0:
+            logging.info(f"{fp.name}: upside-down raster: flipping")
+
+            data = src.read()[:, ::-1, :]  # flip vertically
+
+            new_transform = rasterio.Affine(
+                transform.a,
+                transform.b,
+                transform.c,
+                transform.d,
+                -transform.e,  # fix sign
+                transform.f + transform.e * src.height
+            )
+
+            profile = src.profile.copy()
+            profile.update(transform=new_transform)
+
+            memfile = MemoryFile()
+            dst = memfile.open(**profile)
+            dst.write(data)
+
+            memfiles.append(memfile)
+            srcs.append(dst)
+
+        else:
+            srcs.append(src)
 
     try:
         mosaic, transform = merge(srcs, method="max")
