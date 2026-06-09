@@ -1,12 +1,18 @@
 steps:
-  - subgrid.create:
-      elevation_list:
-      - elevation: kampala_05m_dem_lidar
-        zmin: 0.001
-      - elevation: copdem30
-        zmin: 0.001
-      roughness_list:
-      - lulc: esa_worldcover
-      nr_subgrid_pixels: 10  # number of subgrid pixels per grid cell (e.g. 4 = 4x4 = 16 subgrid pixels per grid cell)
-      write_dep_tif : true  # write depth-dependent subgrid tables as GeoTIFFs (for debugging/visualization)
-      write_man_tif : true  # write roughness-based subgrid tables as GeoTIFFs (for debugging/visualization)
+  override:
+    - subgrid.create:
+        elevation_list:
+        - elevation: kampala_05m_dem_lidar
+          zmin: 0.001
+        - elevation: copdem30
+          zmin: 0.001
+        roughness_list:
+        - lulc: esa_worldcover
+        nr_subgrid_pixels: 10  # number of subgrid pixels per grid cell (e.g. 4 = 4x4 = 16 subgrid pixels per grid cell)
+        write_dep_tif : true  # write depth-dependent subgrid tables as GeoTIFFs (for debugging/visualization)
+        write_man_tif : true  # write roughness-based subgrid tables as GeoTIFFs (for debugging/visualization)
+  add:
+    - mask.create_boundary:
+        btype: waterlevel
+        include_polygon: c:/Git_repos/UFFFS/cities/Kampala/data/kampala_03_include_bnd_H.geojson
+    - water_level.create_boundary_points_from_mask:
