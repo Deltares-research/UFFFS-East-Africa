@@ -237,6 +237,11 @@ This project uses **DVC (Data Version Control)** to manage large datasets and mo
 ```bash
 pip install dvc[s3]
 ```
+or
+```bash
+winget install --id Iterative.DVC
+```
+
 
 ### 2. Configure MinIO credentials
 
