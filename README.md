@@ -290,7 +290,7 @@ Shared (in `.dvc/config`):
 
 ```ini
 ['remote "miniostorage"']
-    url = s3://fews-dca
+    url = s3://ufffs-east-africa
     endpointurl = https://s3.deltares.nl
 ```
 
