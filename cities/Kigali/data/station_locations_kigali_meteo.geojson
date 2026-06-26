@@ -1,0 +1,19 @@
+{
+"type": "FeatureCollection",
+"name": "station_locations_kigali_meteo",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Station Name": "Kanombe", "Longitude": 30.14953, "Latitude": -1.971556, "Altitude": 1412, "Sector": "Kanombe", "District": "Kicukiro", "Type": "AWS", "Date of installation": 2013 }, "geometry": { "type": "Point", "coordinates": [ 30.14953, -1.971556, 1412.0 ] } },
+{ "type": "Feature", "properties": { "Station Name": "Gikomero", "Longitude": 30.21839, "Latitude": -1.887528, "Altitude": 1882, "Sector": "Gikomero", "District": "Gasabo", "Type": "AWS", "Date of installation": 2013 }, "geometry": { "type": "Point", "coordinates": [ 30.21839, -1.887528, 1882.0 ] } },
+{ "type": "Feature", "properties": { "Station Name": "Gitega", "Longitude": 30.057824, "Latitude": -1.956129, "Altitude": 1522, "Sector": "Gitega", "District": "Nyarugenge", "Type": "AWS", "Date of installation": 2017 }, "geometry": { "type": "Point", "coordinates": [ 30.057824, -1.956129, 1522.0 ] } },
+{ "type": "Feature", "properties": { "Station Name": "RUBUNGO RAB", "Longitude": 30.16778, "Latitude": -1.979167, "Altitude": 1458, "Sector": "Gikomero", "District": "Gasabo", "Type": "MRG", "Date of installation": 2010 }, "geometry": { "type": "Point", "coordinates": [ 30.16778, -1.979167, 1458.0 ] } },
+{ "type": "Feature", "properties": { "Station Name": "Mageregere Sector", "Longitude": 30.0241667, "Latitude": 2.0216667, "Altitude": 1386, "Sector": "Mageragere", "District": "Nyarugenge", "Type": "CL", "Date of installation": 2010 }, "geometry": { "type": "Point", "coordinates": [ 30.0241667, 2.0216667, 1386.0 ] } },
+{ "type": "Feature", "properties": { "Station Name": "Gahanga", "Longitude": 30.12141667, "Latitude": -2.019, "Altitude": 1527, "Sector": "Gahanga", "District": "Kicukiro", "Type": "ARG", "Date of installation": 2014 }, "geometry": { "type": "Point", "coordinates": [ 30.12141667, -2.019, 1527.0 ] } },
+{ "type": "Feature", "properties": { "Station Name": "Masaka", "Longitude": 30.19258333, "Latitude": -1.997138889, "Altitude": 1418, "Sector": "Masaka", "District": "Kicukiro", "Type": "ARG", "Date of installation": 2014 }, "geometry": { "type": "Point", "coordinates": [ 30.19258333, -1.997138889, 1418.0 ] } },
+{ "type": "Feature", "properties": { "Station Name": "Rubirizi", "Longitude": 30.13180556, "Latitude": -1.988305556, "Altitude": 1441, "Sector": "Kanombe", "District": "Kicukiro", "Type": "ARG", "Date of installation": 2014 }, "geometry": { "type": "Point", "coordinates": [ 30.13180556, -1.988305556, 1441.0 ] } },
+{ "type": "Feature", "properties": { "Station Name": "Jali", "Longitude": 30.12972222, "Latitude": -1.987222222, "Altitude": 2003, "Sector": "Jali", "District": "Gasabo", "Type": "ARG", "Date of installation": 2014 }, "geometry": { "type": "Point", "coordinates": [ 30.12972222, -1.987222222, 2003.0 ] } },
+{ "type": "Feature", "properties": { "Station Name": "Ndera", "Longitude": 30.17333333, "Latitude": -1.947111111, "Altitude": 1463, "Sector": "Ndera", "District": "Gasabo", "Type": "ARG", "Date of installation": 2014 }, "geometry": { "type": "Point", "coordinates": [ 30.17333333, -1.947111111, 1463.0 ] } },
+{ "type": "Feature", "properties": { "Station Name": "Kigali Sector", "Longitude": 30.01638889, "Latitude": -1.982555556, "Altitude": 1481, "Sector": "Kigali", "District": "Nyarugenge", "Type": "ARG", "Date of installation": 2014 }, "geometry": { "type": "Point", "coordinates": [ 30.01638889, -1.982555556, 1481.0 ] } },
+{ "type": "Feature", "properties": { "Station Name": "Rugunga", "Longitude": 30.06777763, "Latitude": -1.957888924, "Altitude": 1450, "Sector": "Nyarugenge", "District": "Nyarugenge", "Type": "ARG", "Date of installation": 2014 }, "geometry": { "type": "Point", "coordinates": [ 30.06777763, -1.957888924, 1450.0 ] } }
+]
+}

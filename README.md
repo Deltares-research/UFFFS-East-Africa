@@ -220,6 +220,93 @@ pixi run run
 conda env create -f environment.yml
 conda activate ufffs
 ```
+## 💾 Data management (DVC + MinIO)
+
+This project uses **DVC (Data Version Control)** to manage large datasets and model inputs/outputs.
+
+- Git → code and configuration (Snakemake, YAML, scripts)
+- DVC → large data (models, forcing, outputs)
+- MinIO (S3) → remote storage
+
+---
+
+## 🔧 First-time setup
+
+### 1. Install DVC
+
+```bash
+pip install dvc[s3]
+```
+
+### 2. Configure MinIO credentials
+
+Each user must set their own credentials locally:
+
+```bash
+dvc remote modify miniostorage --local access_key_id YOUR_ACCESS_KEY
+dvc remote modify miniostorage --local secret_access_key YOUR_SECRET_KEY
+```
+
+### 3. Pull data
+
+```bash
+dvc pull
+```
+
+---
+
+## 🔄 Typical workflow
+
+### Pull data
+
+```bash
+dvc pull
+```
+
+### Track new data
+
+```bash
+dvc add <file_or_folder>
+git add <file>.dvc .gitignore
+git commit -m "track data"
+```
+
+### Push data
+
+```bash
+dvc push
+```
+
+---
+
+## ⚙️ Remote configuration
+
+Shared (in `.dvc/config`):
+
+```ini
+['remote "miniostorage"']
+    url = s3://fews-dca
+    endpointurl = https://s3.deltares.nl
+```
+
+Private (in `.dvc/config.local`, NOT committed):
+
+```ini
+['remote "miniostorage"']
+    access_key_id = XXX
+    secret_access_key = XXX
+```
+
+---
+
+## 🔐 Security notes
+
+- Never commit access keys
+- `.dvc/config.local` is ignored by Git
+- Each user has their own credentials
+
+---
+
 
 ---
 
