@@ -1,0 +1,182 @@
+# workflows/Snakefile_events
+# Event workflow:
+# 1) update base SFINCS models with event-specific forcing
+# 2) run SFINCS
+# 3) postprocess to downscaled floodmap
+# 4) combine all model floodmaps per city/event into one final floodmap
+
+configfile: "config/events.yml"
+
+from pathlib import Path
+import yaml
+import subprocess
+
+# -------------------------------------------------------------------
+# Load base-model registry from the existing base config
+# -------------------------------------------------------------------
+BASE_CFG_PATH = "config/cities.yml"
+with open(BASE_CFG_PATH, "r", encoding="utf-8") as f:
+    BASE_CFG = yaml.safe_load(f)
+
+EVENT_CFG_PATH = "config/events.yml"
+
+# -------------------------------------------------------------------
+# Helpers
+# -------------------------------------------------------------------
+def cities():
+    return list(config.get("cities", {}).keys())
+
+def all_sfincs_models_for_city(city):
+    return list(BASE_CFG["cities"][city].get("sfincs", {}).keys())
+
+def event_model_list(city, event):
+    ev = config["cities"][city]["events"][event]
+    models = ev.get("models", "all")
+    if models == "all":
+        return all_sfincs_models_for_city(city)
+    return list(models)
+
+def base_sfincs_cfg(city, sfmodel):
+    return BASE_CFG["cities"][city]["sfincs"][sfmodel]
+
+def event_cfg_file(_wc):
+    return EVENT_CFG_PATH
+
+def model_group(city, sfmodel):
+    return BASE_CFG["cities"][city]["sfincs"][sfmodel].get("group", "default")
+
+def event_group_triples():
+    triples = []
+    for city in cities():
+        for event, ev_cfg in config["cities"][city]["events"].items():
+            models = event_model_list(city, event)
+
+            # Collect groups present in this event
+            groups = set(model_group(city, m) for m in models)
+
+            for group in groups:
+                triples.append((city, event, group))
+    return triples
+
+EVENT_GROUP_TRIPLES = event_group_triples()
+
+
+
+def base_model_root(wc):
+    return f"outputs/{wc.city}/sfincs_base/{wc.sfmodel}"
+
+def base_model_inp(wc):
+    return str(Path(base_model_root(wc)) / "sfincs.inp")
+
+def merged_event_floodmap(wc):
+    return f"outputs/{wc.city}/events/{wc.event}/floodmap.tif"
+
+def event_floodmaps_for_group(wc):
+    return [
+        f"outputs/{wc.city}/events/{wc.event}/{sfmodel}/floodmap.tif"
+        for sfmodel in event_model_list(wc.city, wc.event)
+        if model_group(wc.city, sfmodel) == wc.group
+    ]
+
+# -------------------------------------------------------------------
+# Get SFINCS executable (single global exe)
+# -------------------------------------------------------------------
+if "global" not in config or "sfincs_exe" not in config["global"]:
+    raise ValueError("Missing 'global.sfincs_exe' in config/events.yml")
+
+SFINCS_EXE = config["global"]["sfincs_exe"]
+
+# -------------------------------------------------------------------
+# Targets
+# -------------------------------------------------------------------
+rule all:
+    input:
+        expand(
+            "outputs/{city}/events/{event}/{city}_{event}_{group}_floodmap.tif",
+            zip,
+            city=[c for c, e, g in EVENT_GROUP_TRIPLES],
+            event=[e for c, e, g in EVENT_GROUP_TRIPLES],
+            group=[g for c, e, g in EVENT_GROUP_TRIPLES],
+        )
+
+
+# -------------------------------------------------------------------
+# 1) Update base model with event-specific forcing
+# -------------------------------------------------------------------
+rule update_sfincs_forcing:
+    input:
+        base_model=base_model_inp,
+        base_cfg=BASE_CFG_PATH,
+        events_cfg=EVENT_CFG_PATH,
+    output:
+        "outputs/{city}/events/{event}/{sfmodel}/sfincs.inp"
+    script:
+        "scripts/update_sfincs_forcing.py"
+
+# -------------------------------------------------------------------
+# 2) Run SFINCS
+# -------------------------------------------------------------------
+rule run_sfincs:
+    input:
+        "outputs/{city}/events/{event}/{sfmodel}/sfincs.inp"
+    output:
+        "outputs/{city}/events/{event}/{sfmodel}/sfincs_map.nc"
+    log:
+        "logs/events/run_{city}_{event}_{sfmodel}.log"
+    params:
+        model_root="outputs/{city}/events/{event}/{sfmodel}"
+    run:
+        log_path = Path(log[0])
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+
+        model_root = Path(params.model_root)
+        exe = SFINCS_EXE
+
+        with open(log_path, "w", encoding="utf-8") as lf:
+            lf.write(f"Running SFINCS executable: {exe}\n")
+            lf.write(f"Working directory: {model_root}\n")
+
+            subprocess.run(
+                [exe],
+                cwd=str(model_root),
+                check=True,
+                stdout=lf,
+                stderr=subprocess.STDOUT,
+            )
+
+        expected = model_root / "sfincs_map.nc"
+        if not expected.exists():
+            raise FileNotFoundError(
+                f"SFINCS finished but expected output not found: {expected}"
+            )
+
+# -------------------------------------------------------------------
+# 3) Postprocess
+# -------------------------------------------------------------------
+rule postprocess_sfincs:
+    input:
+        map="outputs/{city}/events/{event}/{sfmodel}/sfincs_map.nc",
+        base_cfg=BASE_CFG_PATH,
+        events_cfg=EVENT_CFG_PATH,
+    output:
+        "outputs/{city}/events/{event}/{sfmodel}/floodmap.tif"
+    log:
+        "logs/events/post_{city}_{event}_{sfmodel}.log"
+    script:
+        "scripts/postprocess_sfincs.py"
+
+# -------------------------------------------------------------------
+# 4) Merge floodmaps across all models for one city/event
+#    - if only one model: copy
+#    - if multiple models: merge using max
+# -------------------------------------------------------------------
+rule combine_event_floodmaps:
+    input:
+        event_floodmaps_for_group
+    output:
+        "outputs/{city}/events/{event}/{city}_{event}_{group}_floodmap.tif"
+    log:
+        "logs/events/merge_{city}_{event}_{group}.log"
+    script:
+        "scripts/merge_floodmaps.py"
+

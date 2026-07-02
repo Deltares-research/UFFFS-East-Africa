@@ -4,6 +4,7 @@
 global:
   data_libs:
     - deltares_data   # default HydroMT datasets (optional)
+    - C:\Users\berg\Documents\GitHub\UFFFS-East-Africa\config\data_catalog.yml
   crs: utm            # SFINCS requires projected CRS
 
 # -------------------------------------------------------------------
@@ -29,7 +30,7 @@ steps:
       # region:
         # geom: region        # refers to region passed from CLI
       res: 30               # default resolution (can override per tile)
-      rotated: true
+      rotated: false
 
   # ---------------------------------------------------------------
   # 3. Create elevation (DEM merging etc.)
@@ -76,4 +77,6 @@ steps:
       roughness_list:
       - lulc: esa_worldcover
       nr_subgrid_pixels: 4  # number of subgrid pixels per grid cell (e.g. 4 = 4x4 = 16 subgrid pixels per grid cell)
+      write_dep_tif : true  # write depth-dependent subgrid tables as GeoTIFFs (for debugging/visualization)
+      write_man_tif : true  # write roughness-based subgrid tables as GeoTIFFs (for debugging/visualization)
 

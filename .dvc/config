@@ -1,0 +1,7 @@
+[core]
+    remote = miniostorage
+    autostage = true
+['remote "miniostorage"']
+    url = s3://ufffs-east-africa
+    endpointurl = https://s3.deltares.nl
+    ssl_verify = false
