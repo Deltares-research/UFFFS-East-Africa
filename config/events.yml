@@ -1,6 +1,6 @@
 global:
   data_libs:
-    - D:\CREWS_UFFFS\Repository_Addis\UFFFS-East-Africa\config\data_catalog.yml
+    - D:\CREWS_UFFFS\develop_Vera\UFFFS-East-Africa\config\data_catalog.yml
   sfincs_exe: "D:/CREWS_UFFFS/SFINCS/SFINCS/SFINCS_2025_02_release/SFINCS_v2.3.0_mt_Faber_release_exe/sfincs.exe"
 
 cities:
@@ -18,8 +18,6 @@ cities:
             locations: cities/Khartoem/data/discharge_locations.geojson
         postprocess:
           hmin: 0.05
-
-
 
 # global:
 #   data_libs: 'deltares_data'

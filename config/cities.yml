@@ -1,5 +1,5 @@
 # data_catalog: p:/wflow_global/hydromt/deltares_data.yml
-data_catalog: D:\CREWS_UFFFS\Repository_Addis\UFFFS-East-Africa\config\data_catalog.yml
+data_catalog: D:\CREWS_UFFFS\develop_Vera\UFFFS-East-Africa\config\data_catalog.yml
 
 cities:
   Khartoem:
