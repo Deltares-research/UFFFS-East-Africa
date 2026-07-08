@@ -1,20 +1,11 @@
 global:
-  data_libs: 'deltares_data'
-  sfincs_exe: "c:/Program Files/Deltares/SFINCS_v2.3.0_mt_Faber_release_exe/sfincs.exe"
+  data_libs:
+    - D:\CREWS_UFFFS\Repository_Addis\UFFFS-East-Africa\config\data_catalog.yml
+  sfincs_exe: "D:/CREWS_UFFFS/SFINCS/SFINCS/SFINCS_2025_02_release/SFINCS_v2.3.0_mt_Faber_release_exe/sfincs.exe"
 
 cities:
-  Kampala:
+  Khartoem:
     events:
-      # era5_may2024:
-      #   start: "20200501 000000"
-      #   end: "20200503 000000"
-      #   models: 
-      #     - kampala_sfincsmodel_01_lidar
-      #   forcing:
-      #     type: catalog
-      #     precip: "era5_hourly"
-      #   postprocess:
-      #     hmin: 0.05
       synthetic_60mm_6h:
         start: "20240601 000000"
         end: "20240601 060000"
@@ -22,8 +13,40 @@ cities:
         forcing:
           type: synthetic_constant
           precipitation_mm_per_hr: 10
+          discharge:
+            timeseries: cities/Khartoem/data/discharge_timeseries.csv
+            locations: cities/Khartoem/data/discharge_locations.geojson
         postprocess:
           hmin: 0.05
+
+
+
+# global:
+#   data_libs: 'deltares_data'
+#   sfincs_exe: "c:/Program Files/Deltares/SFINCS_v2.3.0_mt_Faber_release_exe/sfincs.exe"
+
+# cities:
+#   Kampala:
+#     events:
+#       # era5_may2024:
+#       #   start: "20200501 000000"
+#       #   end: "20200503 000000"
+#       #   models: 
+#       #     - kampala_sfincsmodel_01_lidar
+#       #   forcing:
+#       #     type: catalog
+#       #     precip: "era5_hourly"
+#       #   postprocess:
+#       #     hmin: 0.05
+#       synthetic_60mm_6h:
+#         start: "20240601 000000"
+#         end: "20240601 060000"
+#         models: all
+#         forcing:
+#           type: synthetic_constant
+#           precipitation_mm_per_hr: 10
+#         postprocess:
+#           hmin: 0.05
   # Kigali:
   #   events:
   #     synthetic_60mm_6h:

@@ -1,37 +1,65 @@
-data_catalog: p:/wflow_global/hydromt/deltares_data.yml
+# data_catalog: p:/wflow_global/hydromt/deltares_data.yml
+data_catalog: D:\CREWS_UFFFS\Repository_Addis\UFFFS-East-Africa\config\data_catalog.yml
 
 cities:
-  Kampala:
-    wflow:
+  Khartoem:
+    wflow: 
       enabled: false
     sfincs:
-      kampala_sfincsmodel_01:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_01.geojson
+      Khartoem_sfincsmodel:
+        region: cities/Khartoem/data/sfincs_domains/Khartoem_sfincsmodel.geojson
         build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_01.yml
-      kampala_sfincsmodel_02:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_02.geojson
-        build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_02.yml
-      kampala_sfincsmodel_03:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_03.geojson
-        build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_03.yml
-      kampala_sfincsmodel_01_lidar:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_01.geojson
-        build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_01_lidar.yml
-        group: "lidar"
-      kampala_sfincsmodel_02_lidar:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_02.geojson
-        build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_02_lidar.yml
-        group: "lidar"
-      kampala_sfincsmodel_03_lidar:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_03.geojson
-        build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_03_lidar.yml
-        group: "lidar"
+        build_overrides: cities/Khartoem/params/sfincs/Khartoem_sfincsmodel.yml
+        model_dir: outputs/Khartoem/sfincs_base/Khartoem_sfincsmodel
+
+  # Addis:
+  #   wflow: 
+  #     enabled: false
+  #   sfincs:
+  #     addis_sfincsmodel_01:
+  #       region: cities/Addis/data/sfincs_domains/Basin1_dissolved.geojson
+  #       build_config: config/templates/sfincs/build_base.yml
+  #       build_overrides: cities/Addis/params/sfincs/addis_sfincsmodel_01.yml
+  #       model_dir: outputs/Addis/sfincs/addis_sfincsmodel_01/base
+  #     addis_sfincsmodel_02:
+  #       region: cities/Addis/data/sfincs_domains/Basin2_dissolved.geojson
+  #       build_config: config/templates/sfincs/build_base.yml
+  #       build_overrides: cities/Addis/params/sfincs/addis_sfincsmodel_02.yml
+  #       model_dir: outputs/Addis/sfincs/addis_sfincsmodel_02/base
+
+# cities:
+#   Kampala:
+#     wflow:
+#       enabled: false
+#     sfincs:
+#       kampala_sfincsmodel_01:
+#         region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_01.geojson
+#         build_config: config/templates/sfincs/build_base.yml
+#         build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_01.yml
+#       kampala_sfincsmodel_02:
+#         region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_02.geojson
+#         build_config: config/templates/sfincs/build_base.yml
+#         build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_02.yml
+#       kampala_sfincsmodel_03:
+#         region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_03.geojson
+#         build_config: config/templates/sfincs/build_base.yml
+#         build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_03.yml
+#       kampala_sfincsmodel_01_lidar:
+#         region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_01.geojson
+#         build_config: config/templates/sfincs/build_base.yml
+#         build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_01_lidar.yml
+#         group: "lidar"
+#       kampala_sfincsmodel_02_lidar:
+#         region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_02.geojson
+#         build_config: config/templates/sfincs/build_base.yml
+#         build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_02_lidar.yml
+#         group: "lidar"
+#       kampala_sfincsmodel_03_lidar:
+#         region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_03.geojson
+#         build_config: config/templates/sfincs/build_base.yml
+#         build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_03_lidar.yml
+#         group: "lidar"
+
   # Kigali:
   #   wflow:
   #     enabled: false
@@ -41,3 +69,24 @@ cities:
   #       build_config: config/templates/sfincs/build_base.yml
   #       build_overrides: cities/Kigali/params/sfincs/kigali_sfincsmodel_01.yml
 
+  # Juba:
+  #   wflow:
+  #     region: cities/Juba/data/wflow_basin.geojson
+  #     build_config: config/templates/wflow/build.yml
+  #     build_overrides: cities/Juba/params/wflow_overrides.yml
+  #   sfincs:
+  #     juba_sfincsmodel_01:
+  #       region: cities/Juba/data/sfincs_domains/juba_sfincsmodel_01.geojson
+  #       build_config: config/templates/sfincs/build_base.yml
+  #       build_overrides: cities/Juba/params/sfincs/juba_sfincsmodel_01.yml
+  #       model_dir: outputs/Juba/sfincs/juba_sfincsmodel_01/base
+  #     juba_sfincsmodel_02:
+  #       region: cities/Juba/data/sfincs_domains/juba_sfincsmodel_02.geojson
+  #       build_config: config/templates/sfincs/build_base.yml
+  #       build_overrides: cities/Juba/params/sfincs/juba_sfincsmodel_02.yml
+  #       model_dir: outputs/Juba/sfincs/juba_sfincsmodel_02/base
+  #     submodel_03:
+  #       region: cities/Juba/data/sfincs_domains/juba_sfincsmodel_03.geojson
+  #       build_config: config/templates/sfincs/build_base.yml
+  #       build_overrides: cities/Juba/params/sfincs/submodel_03.yml
+  #       model_dir: outputs/Juba/sfincs/submodel_03/base
