@@ -74,3 +74,14 @@ esa_worldcover2021:
 #     source_license: CC-BY-NC 4.0 or ODbL 1.0
 #     source_url: http://hydro.iis.u-tokyo.ac.jp/~yamadai/MERIT_Hydro
 #     source_version: 1.0
+Kigali_DEM_1m:
+  data_type: RasterDataset
+  uri: ..\cities\Kigali\data\Kigali_DEM_1m.tif
+  driver:
+    name: rasterio
+    options:
+      chunks:
+        x: 3600
+        y: 3600
+  metadata:
+    category: topography

@@ -37,6 +37,16 @@ cities:
   #         hmin: 0.05
   # Kigali:
   #   events:
+  #     # era5_may2024:
+  #     #   start: "20200501 000000"
+  #     #   end: "20200503 000000"
+  #     #   models: 
+  #     #     - kampala_sfincsmodel_01_lidar
+  #     #   forcing:
+  #     #     type: catalog
+  #     #     precip: "era5_hourly"
+  #     #   postprocess:
+  #     #     hmin: 0.05
   #     synthetic_60mm_6h:
   #       start: "20240601 000000"
   #       end: "20240601 060000"
