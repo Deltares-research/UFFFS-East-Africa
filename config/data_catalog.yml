@@ -1,7 +1,3 @@
-meta:
-  root: D:\HydroMT_data_east_africa
-  version: 2022.7
-
 copdem30:
   data_type: RasterDataset
   uri: topography/copdem/copdem.vrt
@@ -35,9 +31,9 @@ copdem30:
 #     category: topography
 #     # nodata: -9999  # copdem has no actual nodata, this is to suppress a missing nodata warning 
 
-esa_worldcover:
+esa_worldcover2021:
   data_type: RasterDataset
-  uri: landuse/esa-worldcover/esa-worldcover.vrt
+  uri: esa-worldcover.tif
   driver:
     name: rasterio
     options:

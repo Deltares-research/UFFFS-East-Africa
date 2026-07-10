@@ -3,8 +3,8 @@
 # -------------------------------------------------------------------
 global:
   data_libs:
-    - deltares_data   # default HydroMT datasets (optional)
-    - C:\Users\berg\Documents\GitHub\UFFFS-East-Africa\config\data_catalog.yml
+    #- deltares_data   # default HydroMT datasets (optional)
+    # - config\data_catalog.yml
   crs: utm            # SFINCS requires projected CRS
 
 # -------------------------------------------------------------------
@@ -59,7 +59,7 @@ steps:
   # ---------------------------------------------------------------
   - roughness.create:
       roughness_list:
-      - lulc: esa_worldcover   # from data catalog
+      - lulc: esa_worldcover2021   # from data catalog
 
   # ---------------------------------------------------------------
   # 7. Add infiltration (simple default)
@@ -67,8 +67,8 @@ steps:
   # - infiltration.create_cn:
   #     cn: soilgrids              # curve number dataset
   - infiltration.create_constant:
-      lulc: esa_worldcover
-      reclass_table: cities/Khartoem/data/infiltration_reclass.csv
+      lulc: esa_worldcover2021
+      reclass_table: cities/Khartoum/data/infiltration_reclass.csv
       reproj_method: average
 
   # ---------------------------------------------------------------
@@ -79,7 +79,7 @@ steps:
       - elevation: copdem30
         zmin: 0.001
       roughness_list:
-      - lulc: esa_worldcover
+      - lulc: esa_worldcover2021
       nr_subgrid_pixels: 4  # number of subgrid pixels per grid cell (e.g. 4 = 4x4 = 16 subgrid pixels per grid cell)
       write_dep_tif : true  # write depth-dependent subgrid tables as GeoTIFFs (for debugging/visualization)
       write_man_tif : true  # write roughness-based subgrid tables as GeoTIFFs (for debugging/visualization)
