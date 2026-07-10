@@ -1,12 +1,12 @@
-data_catalog: p:/wflow_global/hydromt/deltares_data.yml
+data_catalog: C:\Users\berg\Documents\GitHub\UFFFS-East-Africa\config\data_catalog.yml
 
 cities:
-  Kampala:
-    wflow:
+  Addis:
+    wflow: 
       enabled: false
     sfincs:
-      kampala_sfincsmodel_01:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_01.geojson
+      addis_sfincsmodel_01:
+        region: cities/Addis/data/sfincs_domains/Basin1_dissolved.geojson
         build_config: config/templates/sfincs/build_base.yml
         build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_01.yml
       kampala_sfincsmodel_02:
