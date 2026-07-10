@@ -1,41 +1,37 @@
-meta:
-  root: D:\HydroMT_data_east_africa
-  version: 2022.7
+# copdem30:
+#   data_type: RasterDataset
+#   uri: topography/copdem/copdem.vrt
+#   driver:
+#     name: rasterio
+#     options:
+#       chunks:
+#         x: 3600
+#         y: 3600
+#   data_adapter:
+#     rename:
+#       copdem: elevtn
+#   metadata:
+#     nodata: -9999
+#     category: topography
+#     source_license: https://spacedata.copernicus.eu/documents/20126/0/CSCDA_ESA_Mission-specific+Annex+%281%29.pdf/83b44c0a-244a-7ba3-b00c-b578a34e88a7?t=1604070311399
+#     source_url: https://spacedata.copernicus.eu/web/cscda/dataset-details?articleId=394198#D4
+#     source_version: 2021_1
 
-copdem30:
-  data_type: RasterDataset
-  uri: topography/copdem/copdem.vrt
-  driver:
-    name: rasterio
-    options:
-      chunks:
-        x: 3600
-        y: 3600
-  data_adapter:
-    rename:
-      copdem: elevtn
-  metadata:
-    nodata: -9999
-    category: topography
-    source_license: https://spacedata.copernicus.eu/documents/20126/0/CSCDA_ESA_Mission-specific+Annex+%281%29.pdf/83b44c0a-244a-7ba3-b00c-b578a34e88a7?t=1604070311399
-    source_url: https://spacedata.copernicus.eu/web/cscda/dataset-details?articleId=394198#D4
-    source_version: 2021_1
-
-esa_worldcover:
-  data_type: RasterDataset
-  uri: landuse/esa-worldcover/esa-worldcover.vrt
-  driver:
-    name: rasterio
-    options:
-      chunks:
-        x: 36000
-        y: 36000
-  metadata:
-    crs: 4326
-    category: landuse
-    source_license: CC BY 4.0
-    source_url: https://doi.org/10.5281/zenodo.5571936
-    source_version: v100
+# esa_worldcover:
+#   data_type: RasterDataset
+#   uri: landuse/esa-worldcover/esa-worldcover.vrt
+#   driver:
+#     name: rasterio
+#     options:
+#       chunks:
+#         x: 36000
+#         y: 36000
+#   metadata:
+#     crs: 4326
+#     category: landuse
+#     source_license: CC BY 4.0
+#     source_url: https://doi.org/10.5281/zenodo.5571936
+#     source_version: v100
 
 # merit_hydro:
 #   data_type: RasterDataset
@@ -64,3 +60,14 @@ esa_worldcover:
 #     source_license: CC-BY-NC 4.0 or ODbL 1.0
 #     source_url: http://hydro.iis.u-tokyo.ac.jp/~yamadai/MERIT_Hydro
 #     source_version: 1.0
+Kigali_DEM_1m:
+  data_type: RasterDataset
+  uri: ..\cities\Kigali\data\Kigali_DEM_1m.tif
+  driver:
+    name: rasterio
+    options:
+      chunks:
+        x: 3600
+        y: 3600
+  metadata:
+    category: topography

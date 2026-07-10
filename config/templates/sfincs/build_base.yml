@@ -4,7 +4,7 @@
 global:
   data_libs:
     - deltares_data   # default HydroMT datasets (optional)
-    - C:\Users\berg\Documents\GitHub\UFFFS-East-Africa\config\data_catalog.yml
+    - config\data_catalog.yml
   crs: utm            # SFINCS requires projected CRS
 
 # -------------------------------------------------------------------
