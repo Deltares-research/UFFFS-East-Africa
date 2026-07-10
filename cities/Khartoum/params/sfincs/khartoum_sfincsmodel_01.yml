@@ -1,0 +1,6 @@
+steps:
+  override:
+    - mask.create_boundary:
+        btype: outflow
+        zmin: -5
+        exclude_polygon: cities/Khartoum/data/Upstream_boundary_Khartoum.geojson

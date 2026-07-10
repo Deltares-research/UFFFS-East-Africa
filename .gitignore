@@ -7,3 +7,5 @@ logs/
 .venv/
 __pycache__/*
 *.log
+/esa_worldcover.tif
+pixi.lock

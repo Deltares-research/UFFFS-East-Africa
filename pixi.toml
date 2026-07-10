@@ -32,6 +32,9 @@ pyyaml = ">=6.0"
 # DAG
 graphviz = ">=2"
 
+# data versioning (DVC + MinIO/S3 remote)
+dvc-s3 = "*"
+
 [tasks]
 run = "snakemake -c 1 -s workflows/Snakefile"
 dag = "snakemake -s workflows/Snakefile --rulegraph | dot -Grankdir=LR -Tsvg > rulegraph.svg"
