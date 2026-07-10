@@ -65,6 +65,10 @@ steps:
   # ---------------------------------------------------------------
   # - infiltration.create_cn:
   #     cn: soilgrids              # curve number dataset
+  - infiltration.create_constant:
+      lulc: esa_worldcover
+      reclass_table: cities/Khartoem/data/infiltration_reclass.csv
+      reproj_method: average
 
   # ---------------------------------------------------------------
   # 8. Build subgrid tables (important for urban)

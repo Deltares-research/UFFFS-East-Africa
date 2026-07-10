@@ -3,6 +3,7 @@
 "name": "discharge_locations",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::32636" } },
 "features": [
-{ "type": "Feature", "properties": { "index": 1 }, "geometry": { "type": "Point", "coordinates": [ 445412.594026688369922, 1697765.952445199945942 ] } }
+{ "type": "Feature", "properties": { "index": 1 }, "geometry": { "type": "Point", "coordinates": [ 444946.209276575536933, 1697401.050425050081685 ] } },
+{ "type": "Feature", "properties": { "index": 2 }, "geometry": { "type": "Point", "coordinates": [ 461929.285300012968946, 1715810.010046562179923 ] } }
 ]
 }

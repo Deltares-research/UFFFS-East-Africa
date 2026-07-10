@@ -28,6 +28,10 @@ cartopy = "0.25.*"
 
 # utilities
 pyyaml = "6.0.*"
+ipykernel = ">=7.3.0,<8"
+
+# data versioning (DVC + MinIO/S3 remote)
+dvc-s3 = "*"
 
 [tasks]
 run = "snakemake -c 1 -s workflows/Snakefile"
