@@ -1,0 +1,5 @@
+outs:
+- md5: 53f44e03b80b5201513d301af89b3d91
+  size: 92902406
+  hash: md5
+  path: esa_worldcover.tif
