@@ -5,7 +5,11 @@ steps:
         
   add:
     - discharge_points.create:
-        locations: C:\Users\berg\Documents\GitHub\UFFFS-East-Africa\cities\Juba\data\juba_upstream_boundary.geojson
+        locations: cities\Juba\data\juba_upstream_boundary.geojson
     - discharge_points.create_timeseries:
         shape: constant
         offset: 1600
+        
+  add: 
+    - observation_points.create:
+        locations: cities\Juba\data\juba_hydro_stations.geojson
