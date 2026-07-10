@@ -1,0 +1,13 @@
+landuse,description,qinf
+10,Tree cover,20
+20,Shrubland,15
+30,Grassland,15
+40,Cropland,12
+50,Built-up,2
+60,Bare / sparse vegetation,6
+70,Snow and Ice,0
+80,Permanent water bodies,0
+90,Herbaceous wetland,3
+95,Mangroves,3
+100,Moss and lichen,6
+0,No data,0

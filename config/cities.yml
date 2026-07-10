@@ -58,3 +58,24 @@ cities:
   #       build_config: config/templates/sfincs/build_base.yml
   #       build_overrides: cities/Juba/params/sfincs/juba_sfincsmodel_01.yml
 
+  # Juba:
+  #   wflow:
+  #     region: cities/Juba/data/wflow_basin.geojson
+  #     build_config: config/templates/wflow/build.yml
+  #     build_overrides: cities/Juba/params/wflow_overrides.yml
+  #   sfincs:
+  #     juba_sfincsmodel_01:
+  #       region: cities/Juba/data/sfincs_domains/juba_sfincsmodel_01.geojson
+  #       build_config: config/templates/sfincs/build_base.yml
+  #       build_overrides: cities/Juba/params/sfincs/juba_sfincsmodel_01.yml
+  #       model_dir: outputs/Juba/sfincs/juba_sfincsmodel_01/base
+  #     juba_sfincsmodel_02:
+  #       region: cities/Juba/data/sfincs_domains/juba_sfincsmodel_02.geojson
+  #       build_config: config/templates/sfincs/build_base.yml
+  #       build_overrides: cities/Juba/params/sfincs/juba_sfincsmodel_02.yml
+  #       model_dir: outputs/Juba/sfincs/juba_sfincsmodel_02/base
+  #     submodel_03:
+  #       region: cities/Juba/data/sfincs_domains/juba_sfincsmodel_03.geojson
+  #       build_config: config/templates/sfincs/build_base.yml
+  #       build_overrides: cities/Juba/params/sfincs/submodel_03.yml
+  #       model_dir: outputs/Juba/sfincs/submodel_03/base

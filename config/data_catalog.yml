@@ -21,6 +21,20 @@ copdem30:
     source_url: https://spacedata.copernicus.eu/web/cscda/dataset-details?articleId=394198#D4
     source_version: 2021_1
 
+
+# kampala_05m_dem_lidar:
+#   data_type: RasterDataset
+#   uri: cities/Kampala/data/Kampala_dem_05m_v1.tif
+#   driver: 
+#     name: rasterio
+#     options:
+#       chunks:
+#         x: 3600
+#         y: 3600
+#   metadata:
+#     category: topography
+#     # nodata: -9999  # copdem has no actual nodata, this is to suppress a missing nodata warning 
+
 esa_worldcover:
   data_type: RasterDataset
   uri: landuse/esa-worldcover/esa-worldcover.vrt

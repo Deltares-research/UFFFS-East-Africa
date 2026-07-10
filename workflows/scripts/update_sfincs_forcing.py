@@ -199,6 +199,14 @@ def main(snakemake):
             f"Use 'catalog' or 'synthetic_constant'."
         )
 
+    if "discharge" in forcing_cfg:
+        dis_cfg = forcing_cfg["discharge"]
+        sf.discharge_points.create(
+            timeseries=dis_cfg["timeseries"],
+            locations=dis_cfg["locations"],
+        )
+        logging.info("Created discharge forcing from locations/timeseries")
+
     sf.write()
     logging.info("Wrote updated event model")
     # -----------------------------------------------------------------
