@@ -1,0 +1,11 @@
+steps: 
+  add:
+    - config.update:
+        zsini: 456.5
+        
+  add:
+    - discharge_points.create:
+        locations: C:\Users\berg\Documents\GitHub\UFFFS-East-Africa\cities\Juba\data\juba_upstream_boundary.geojson
+    - discharge_points.create_timeseries:
+        shape: constant
+        offset: 1600
