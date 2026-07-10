@@ -246,14 +246,14 @@ if __name__ == "__main__":
                 self.wildcards = type(
                     "obj",
                     (),
-                    {"city": "Kampala", "sfmodel": "kampala_sfincsmodel_03_lidar"},
+                    {"city": "Juba", "sfmodel": "juba_sfincsmodel_01"},
                 )()
 
                 self.config = yaml.safe_load(open("config/cities.yml"))
 
                 # MUST include this
                 self.output = {
-                    "model_root": "outputs/Kampala/sfincs_base/kampala_sfincsmodel_03_lidar/sfincs.inp"
+                    "model_root": "outputs/Juba/sfincs_base/juba_sfincsmodel_01/sfincs.inp"
                 }
 
                 # Must behave like list

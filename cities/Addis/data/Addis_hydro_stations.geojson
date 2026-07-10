@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "Addis_hydro_stations",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "No.": 1, "CATCHM.": "AWASH (03)", "CATCHM._1": "UPPER (1)", "STN. No.": 31004, "RIV/LAKE": "AKAKI", "SITE": "@ AKAKI", "LAT.": 8.876354, "LON.": 38.784782, "North": 981872, "East": 476177, "DATE": " 12-12-80", "SG": "x", "WLR": null, "BOC": "x", "KM2": 884.4, "ELEV.": 2100, "REMARK": "OPERA", "OFFICE": "CEN", "GOVERN.": "ADDIS ABABA" }, "geometry": { "type": "Point", "coordinates": [ 38.784782, 8.876354 ] } },
+{ "type": "Feature", "properties": { "No.": 2, "CATCHM.": "AWASH (03)", "CATCHM._1": "UPPER (1)", "STN. No.": 31021, "RIV/LAKE": "LIT. AKAKI", "SITE": "D/S GEFERSA DAM", "LAT.": 9.0521, "LON.": 38.682448, "North": 998461, "East": 467028, "DATE": " 4-8-89", "SG": "x", "WLR": null, "BOC": "x", "KM2": 131.0, "ELEV.": null, "REMARK": "OPERA", "OFFICE": "CEN", "GOVERN.": "ADDIS ABABA" }, "geometry": { "type": "Point", "coordinates": [ 38.682448, 9.0521 ] } },
+{ "type": "Feature", "properties": { "No.": 3, "CATCHM.": "AWASH (03)", "CATCHM._1": null, "STN. No.": null, "RIV/LAKE": "KEBENA", "SITE": "Nr. OURAEL SCH.", "LAT.": 9.060419, "LON.": 38.923025, "North": 996612, "East": 476186, "DATE": "24-9-98", "SG": "X", "WLR": null, "BOC": null, "KM2": 497.3, "ELEV.": null, "REMARK": "OPERA", "OFFICE": "CEN", "GOVERN.": "ADDIS ABABA" }, "geometry": { "type": "Point", "coordinates": [ 38.923025, 9.060419 ] } }
+]
+}
