@@ -1,8 +1,5 @@
 steps: 
-  add:
-    - config.update:
-        zsini: 456.5
-        
+       
   add:
     - discharge_points.create:
         locations: cities\Juba\data\juba_upstream_boundary.geojson
