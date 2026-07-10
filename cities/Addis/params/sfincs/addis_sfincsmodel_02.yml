@@ -1,0 +1,4 @@
+steps:
+  override:
+    - observation_points.create:
+        locations: cities\Addis\data\Addis_hydro_stations.geojson
