@@ -1,37 +1,15 @@
-data_catalog: p:/wflow_global/hydromt/deltares_data.yml
+data_catalog: C:\Users\berg\Documents\GitHub\UFFFS-East-Africa\config\data_catalog.yml
 
 cities:
-  Kampala:
+  Juba:
     wflow:
       enabled: false
     sfincs:
-      kampala_sfincsmodel_01:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_01.geojson
+      juba_sfincsmodel_01:
+        region: cities/Juba/data/sfincs_domains/juba_sfincsmodel_01.geojson
         build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_01.yml
-      kampala_sfincsmodel_02:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_02.geojson
-        build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_02.yml
-      kampala_sfincsmodel_03:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_03.geojson
-        build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_03.yml
-      kampala_sfincsmodel_01_lidar:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_01.geojson
-        build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_01_lidar.yml
-        group: "lidar"
-      kampala_sfincsmodel_02_lidar:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_02.geojson
-        build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_02_lidar.yml
-        group: "lidar"
-      kampala_sfincsmodel_03_lidar:
-        region: cities/Kampala/data/sfincs_domains/kampala_sfincsmodel_03.geojson
-        build_config: config/templates/sfincs/build_base.yml
-        build_overrides: cities/Kampala/params/sfincs/kampala_sfincsmodel_03_lidar.yml
-        group: "lidar"
+        build_overrides: cities/Juba/params/sfincs/juba_sfincsmodel_01.yml
+
   # Kigali:
   #   wflow:
   #     enabled: false
