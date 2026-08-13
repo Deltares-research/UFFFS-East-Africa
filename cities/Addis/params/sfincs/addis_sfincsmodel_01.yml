@@ -2,3 +2,5 @@ steps:
   override:
     - observation_points.create:
         locations: cities\Addis\data\Addis_hydro_stations.geojson
+    - cross_sections.create:
+        locations: cities\Addis\data\Addis_cross_sections.geojson

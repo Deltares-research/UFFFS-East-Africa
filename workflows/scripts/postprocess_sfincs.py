@@ -1,9 +1,11 @@
 from pathlib import Path
 import logging
 import sys
+from os.path import join, exists
 import yaml
 
 import xarray as xr
+from matplotlib import pyplot as plt
 import geopandas as gpd
 
 from hydromt_sfincs.utils import downscale_floodmap
@@ -71,6 +73,15 @@ def main(snakemake):
 
     logging.info(f"Model root: {model_root}")
     logging.info(f"Floodmap output: {snakemake.output[0]}")
+    if exists(join(model_root , "sfincs_his.nc" )):
+        if "point_zs" in mod.output.data:
+            plt.figure()
+            mod.output.data["point_zs"].plot.line(x='time')
+            plt.savefig(join(model_root , "sfincs_output_H.png" ))
+        if "crosssection_discharge" in mod.output.data:
+            plt.figure()
+            mod.output.data["crosssection_discharge"].plot.line(x='time')
+            plt.savefig(join(model_root , "sfincs_output_Q.png" ))
 
   
     kwargs = {}
@@ -81,28 +92,35 @@ def main(snakemake):
     if "nrmax" in pp:
         kwargs["nrmax"] = pp["nrmax"]
 
-    downscale_floodmap(
-        zsmax=da_zsmax,
-        dep=str(dem_path),
-        # indices=pp.get("indices"),
-        hmin=pp.get("hmin", 0.05),
-        # gdf_mask=gdf_mask,
-        floodmap_fn=snakemake.output[0],
-        **kwargs,
-    )
+    hmin = pp.get("hmin", 0.05)
+    if "hmax" not in mod.output.data:
+        downscale_floodmap(
+            zsmax=da_zsmax,
+            dep=str(dem_path),
+            # indices=pp.get("indices"),
+            hmin=hmin,
+            # gdf_mask=gdf_mask,
+            floodmap_fn=snakemake.output[0],
+            **kwargs,
+        )
+        logging.info("Downscaled floodmap written successfully")
+        logging.info("=== SFINCS postprocessing finished successfully ===")
+    elif "hmax" in mod.output.data:
+        logging.warning("No subgrid found in model, skipping downscaling of floodmap")
+        da_hmax = mod.output.data["hmax"].max(dim="timemax").where(mod.output.data["hmax"].max(dim="timemax") > hmin)
 
-    logging.info("Downscaled floodmap written successfully")
-    logging.info("=== SFINCS postprocessing finished successfully ===")
-
+        da_hmax.rio.to_raster(snakemake.output[0])
+        logging.info("Floodmap written successfully")
+        logging.info("=== SFINCS postprocessing finished successfully ===")
 
 if __name__ == "__main__":
     try:
         smk = snakemake
     except NameError:
         class _WC:
-            city = "Kampala"
-            event = "synthetic_100mm_24h"
-            sfmodel = "kampala_sfincsmodel_01"
+            city = "Addis"
+            event = "synthetic_60mm_6h"
+            sfmodel = "addis_sfincsmodel_01"
 
         class FakeSnakemake:
             wildcards = _WC()
@@ -111,18 +129,18 @@ if __name__ == "__main__":
                 "obj",
                 (),
                 {
-                    "map": "outputs/Kampala/events/synthetic_100mm_24h/kampala_sfincsmodel_01/model/sfincs_map.nc",
+                    "map": "outputs\\Addis\\events\\synthetic_60mm_6h\\addis_sfincsmodel_01\\sfincs_map.nc",
                     "events_cfg": "config/events.yml",
                     "base_cfg": "config/cities.yml",
                 },
             )()
 
             output = [
-                "outputs/Kampala/events/synthetic_100mm_24h/kampala_sfincsmodel_01/post/floodmap.tif"
+                "outputs\\Addis\\events\\synthetic_60mm_6h\\addis_sfincsmodel_01\\floodmap.tif"
             ]
 
             log = [
-                "logs/events/debug_post_Kampala_synthetic_100mm_24h_kampala_sfincsmodel_01.log"
+                "logs/events/debug_post_Addis_synthetic_60mm_6h_addis_sfincsmodel_01.log"
             ]
 
         smk = FakeSnakemake()

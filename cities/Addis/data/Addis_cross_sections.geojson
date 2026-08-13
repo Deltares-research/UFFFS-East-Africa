@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "addis_cross_sections",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 2 }, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ 38.682070453577595, 9.051442918855551 ], [ 38.682966845933464, 9.052789805831305 ] ] ] } },
+{ "type": "Feature", "properties": { "id": 1 }, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ 38.783670781011217, 8.87614994600116 ], [ 38.785734781871675, 8.875979861297738 ] ] ] } },
+{ "type": "Feature", "properties": { "id": 3 }, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ 38.922113983492295, 9.060189639651156 ], [ 38.924127418630107, 9.061044660052145 ] ] ] } }
+]
+}
